@@ -120,7 +120,7 @@
 %Customize enumerate tag
 \usepackage{enumitem}
 %Sections don't get numbered
-%\setcounter{secnumdepth}{0}
+\setcounter{secnumdepth}{0}
 
 
 \usepackage{fontspec}
@@ -241,7 +241,8 @@ que más afecten al rendimiento	}\\[0.4cm] % Title of your document
 \section{Introducción}
 
 \section{Memoria}
-\subsection{IOStat \cite{maniostat}}
+\subsection{IOStat}
+
 El comando \texttt{iostat}, del paquete \texttt{sysstat} es un comando de UNIX empleado para monitorizar la carga de E/S de un sistema,
 así como el uso de la CPU. Para la monitorización E/S se basa en computar el tiempo que un dispositivo de E/S está activo en 
 relación a su ratio medio de transferencia.
@@ -261,7 +262,7 @@ recopiladas desde la última vez que se reinició el sistema. Las sucesivas vece
   mencionados:
   
   \begin{itemize}
-   \item \texttt{-j \{ID | LABEL | PATH | UUID |\ldots\}}: muestra para cada dispositivo la etiqueta, el UUID,\ldots correspondiente,
+   \item \texttt{-j \{ID | LABEL | PATH | UUID |...\}}: muestra para cada dispositivo la etiqueta, el UUID,\ldots correspondiente,
    en función de lo que hayamos indicado en el comando en lugar del descriptor de bloques /dev/sdX-n usado para identificar a los dispositivos
    por defecto.
    \item \texttt{-k}: muestra las estadísticas expresándolas en kilobytes por segundo.
@@ -329,19 +330,7 @@ La información mostrada puede incluir (en función de si se emplea la opción \
  \item{\texttt{KB\_read}}: número de KB leídos en total desde el dispositivo.
  \item{\texttt{KB\_wrtn}}: número de KB escritos en total al dispositivo.
  \item{\texttt{rrqm/s}}: número de peticiones de lectura combinadas por segundo.
- \item{\texttt{wrqm/s}}: núero de peticiones de escritura combinadas por segundo.
- \item{\texttt{r/s}}: número de peticiones de lectura(ya combinadas) completadas por segundo.
- \item{\texttt{w/s}}: número de peticiones de escritura(ya combinadas) completadas por segundo.
- \item{\texttt{rKB/s}}: equivalente a \texttt{KB\_read/s}.
- \item{\texttt{wKB/s}}: equivalente a \texttt{KB\_wrtn/s}.
- \item{\texttt{avgrq-sz}}: número medio de peticiones de lectura, en bloques (en los kernels más modernos 1 bloque equivale a 512KB) emitidas
- al dispositivo.
- \item{\texttt{avgu-sz}}: longitud media de la cola para las peticiones emitidas al dispositivo.
- \item{\texttt{await}}: media en milisegundos que tarda una petición en ser servida (incluyendo tiempo de servicio y de cola).
- \item{\texttt{r\_await}}: media en milisegundos que tarda una petición de lectura en ser servida.
- \item{\texttt{w\_await}}: media en milisegundos que tarda una petición de escritura en ser servida.
- \item{\texttt{svctm}}: media en milisegundos de tiempo de servicio para las peticiones E/S emitidas al dispositivo.
- \item{\texttt{\%util}}: bandwith del dispositivo.
+ \item
 \end{itemize}
 
 \newpage
