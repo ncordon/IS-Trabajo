@@ -150,7 +150,7 @@
   backgroundcolor=\color{gray!20},
   xleftmargin=0.1\linewidth
 }
-
+\renewcommand*{\newunitpunct}{\newline\space}
 \begin{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % University Assignment Title Page 
@@ -237,14 +237,52 @@ que más afecten al rendimiento	}\\[0.4cm] % Title of your document
 
 
 \section{Resumen}
+Monitorizar el empleo de discos es una función básica en las competencias de un administrador de un servidor, o incluso
+podría ser aprovechado por un usuario medio.
 
+A lo largo de este texto se analizará un monitor de dispositivos llamado \texttt{IOStat}, que viene por defecto instalado
+en algunos sistemas UNIX y se constatará mediante la ejecución de un experimento en que se medirán distintos tipos de medios 
+de almacenamiento mediante un experimento confeccionado a tales fines: se probarán distintos tipos de disco
+duro: IDE,SATA; distintos formatos de partición: NTFS, FAT32,\ldots; y distintas revoluciones por minuto: 3600 rpm, 5400 rpm y 7200 rpm.
+
+Asimismo, también efectuaremos un experimento en el que analizaremos su uso como monitor de CPUs: se probarán varios
+tipos de CPU, variando factores como la velocidad(en Hz), el número de cores, \ldots para correr un programa del que es
+conocido que somete a la CPU a mucha carga.
 \section{Introducción}
+Cuando como administradores de un sistema estamos en la obligación de ofrecer una determinada calidad de servicio (cubrir
+necesidades mínimas de los usuarios que emplearán el sistema), y deseamos mejorar tanto la utilización de CPU como la utilización de 
+memoria de disco, podemos usar un monitor de CPU o de dispositivos, respectivamente.
+
+La pregunta es por qué es deseable optimizar esta parte de un sistema operativo, cuando hay muchos más campos que se pueden
+mejorar en un sistema. La respuesta a esta pregunta se basa en que en el empleo de disco se encuentran los mayores cuellos de
+botella en un ordenador. Porque una transferencia a  disco es del orden de 2000000 de veces más lenta que una transferencia a
+caché de nivel L1, y del orden de 40 veces más lenta que la memoria RAM, y por tanto es potenciablemente optimizable. \cite{conferencia}
+
+IOstat es un ejemplo de estos monitores. Se trata de un sampling monitor (monitor que funciona a intervalos regulares de
+tiempo), de tipo software, que recoge información sobre el empleo de CPU y de dispositivos, basándose en el empleo de la información almacenada
+en los sistemas UNIX en \texttt{/proc}.
+
+Para proporcionar una calidad de servicio determinada, en ocasiones es importante detectar los cuellos de botella en el empleo
+de la memoria o de la CPU. Y \texttt{IOStat} puede ayudarnos a llevar a cabo ese fin. Por ejemplo, nos podría ayudar a rebalancear
+la carga entre discos duros; si por ejemplo tenemos varios discos duros y uno de ellos se emplea más que el resto, en términos
+de cantidad de datos totales escritos o leídos, puede ayudarnos a redistribuir los archivos a los que más se accede, localizando
+el disco duro en el que se encuentran; o si incluso uno de los discos duros es más rápido que el resto (información que 
+también puede estraerse de los informes que genera el monitor), podemos colocar los archivos de los usuarios que más uso generen en dicho
+disco duro, o incluso los datos a los que más se accede, para optimizar el sistema. En IOStat no existe interacción con el 
+administrador/analista, obteniendo sus datos de \texttt{/proc/diskstats}
+%(?).
+En muchas ocasiones, los archivos más accedidos en un sistema son los del sistema operativo, y por tanto el monitor nos podrá
+ayudar a determinar a qué disco o partición mover los archivos en función de la rapidez de cada una. \cite{merelo}
+
+Su uso principal es la monitarización de la memoria, ya que para la monitarización de la CPU existen herramientas mucho más
+completas, como el comando de UNIX \texttt{top}, pero constituyen sólo  un front-end al sistema de archivos \texttt{/proc}, y no
+puede mostrar información que un sistema UNIX de por sí tampoco pueda. \cite{readme}
 
 \section{Memoria}
 \subsection{IOStat \cite{maniostat}}
-El comando \texttt{iostat}, del paquete \texttt{sysstat} es un comando de UNIX empleado para monitorizar la carga de E/S de un sistema,
+El comando \texttt{iostat}, del paquete \texttt{sysstat} está disponible en UNIX empleado para monitorizar la carga de E/S de un sistema,
 así como el uso de la CPU. Para la monitorización E/S se basa en computar el tiempo que un dispositivo de E/S está activo en 
-relación a su ratio medio de transferencia.
+relación a su ratio medio de transferencia. El comando está escrito en C, y está disponible bajo licencia GNU Public License v2.
 
 El comando genera dos informes estadísticos: uno sobre el uso de CPU y otro sobre uso de E/S. Para mostrar cada uno, ocultando
 el otro, basta usar \texttt{iostat -c} o \texttt{iostat -d} respectivamente. Respecto a las estadísticas CPU, cabe mencionar
@@ -269,7 +307,9 @@ recopiladas desde la última vez que se reinició el sistema. Las sucesivas vece
    \item \texttt{-p}: proporciona estadísticas no sólo para cada dispositivo, sino también para las particiones presentes en cada
    dispositivo.
    \item \texttt{-t}: hace que en los informes se incluya también un timestamp con la hora a la que corresponden.
-   \item \texttt{-x}: muestra estadísticas expandidas.
+   \item \texttt{-x}: muestra estadísticas expandidas. Si no se usa esta opción, se muestran para cada dispositivo solamente
+   los valores: \texttt{tps, kB\_read/s, kB\_wrtn/s, KB\_read, kB\_wrtn}. Si se emplea dicha opción se muestra toda la
+   información descrita en \ref{optdisp}, excepto los campos mencionados anteriormente.
    \item \texttt{-y}: omite el primero de los informes (información acumulada desde el último reinicio).
    \item \texttt{-z}: omite en los informes aquellos dispositivos para los que no se registró actividad durante la acumulación
    de información.
@@ -315,6 +355,7 @@ La información aportada incluye:
 \end{itemize}
 
 \subsubsection{Informe dispositivos}
+\label{optdisp}
 La información mostrada puede incluir (en función de si se emplea la opción \texttt{-x} o no):
 \begin{itemize}
  \item{\texttt{Device}}: descriptor de dispositivo \texttt{/dev/sdX} o de partición \texttt{/dev/sdXn}, donde \texttt{X} es una
