@@ -1,0 +1,21 @@
+cpu averages
+	user: 0.138571428571
+	nice: 0.0557142857143
+	system: 10.6028571429
+	iowait: 89.2014285714
+	steal: 0.0
+	idle: 0.0
+sde averages:
+	util: 120.33047619
+	r_await: 0.0
+	avgqusz: 162.747619048
+	await: 591.926190476
+	rMB: 0.0
+	svctm: 4.4319047619
+	r: 0.0
+	wrqm: 1.74095238095
+	w: 271.79047619
+	avgrqsz: 236.34
+	wMB: 31.3747619048
+	rrqm: 0.0
+	w_await: 591.926190476

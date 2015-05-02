@@ -1,0 +1,473 @@
+\documentclass[a4paper,10pt]{article}
+% Símbolo del euro
+\usepackage[gen]{eurosym}
+% Codificación
+\usepackage[utf8]{inputenc}
+% Idioma
+\usepackage[spanish]{babel} % English language/hyphenation
+\selectlanguage{spanish}
+% Hay que pelearse con babel-spanish para el alineamiento del punto decimal
+\decimalpoint
+\usepackage{dcolumn}
+\newcolumntype{d}[1]{D{.}{\esperiod}{#1}}
+\makeatletter
+\addto\shorthandsspanish{\let\esperiod\es@period@code}
+\makeatother
+% To work with bibtex
+%\usepackage{natbib}
+\usepackage[backend=bibtex,style=numeric,sorting=none]{biblatex}
+\bibliography{references}
+\usepackage{longtable}
+\usepackage{tabu}
+\usepackage{supertabular}
+
+\usepackage{multicol}
+\newsavebox\ltmcbox
+
+% Para algoritmos
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{amsthm}
+% Para matrices
+\usepackage{amsmath}
+
+% Símbolos matemáticos
+\usepackage{amssymb}
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
+% Hipervínculos
+\usepackage{url}
+
+\usepackage[section]{placeins} % Para gráficas en su sección.
+\usepackage{mathpazo} % Use the Palatino font
+\usepackage[T1]{fontenc} % Required for accented characters
+\newenvironment{allintypewriter}{\ttfamily}{\par}
+\setlength{\parindent}{0pt}
+\parskip=8pt
+\linespread{1.05} % Change line spacing here, Palatino benefits from a slight increase by default
+
+
+% Imágenes
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{wrapfig} % Allows in-line images
+
+% Referencias
+\usepackage{fncylab}
+\labelformat{figure}{\textit{\figurename\space #1}}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks   = true, %Colours links instead of ugly boxes
+  urlcolor     = blue, %Colour for external hyperlinks
+  linkcolor    = blue, %Colour of internal links
+  citecolor   = red %Colour of citations
+}
+
+%Basado en: http://en.wikibooks.org/wiki/LaTeX/Theorems
+\usepackage{amsthm}
+\newtheorem*{mydef}{Definición}
+\newtheorem{mydefn}{Definición}
+\newtheorem{theorem}{Teorema}
+\everymath{\displaystyle} % Displaystyle por defecto
+
+% To include code
+\usepackage{xcolor}
+\usepackage{listings}
+
+% code in bash style
+\lstdefinestyle{BashInputStyle}{
+  language=bash,
+  basicstyle=\small\ttfamily,
+  numberstyle=\tiny,
+  numbersep=3pt,
+  columns=fullflexible,
+  backgroundcolor=\color{gray!20},
+  xleftmargin=0.1\linewidth
+}
+
+
+% To change level of indentation
+\newenvironment{answer}{%
+\begin{list}{}{%
+}%
+\item[]}{\end{list}}
+
+
+\makeatletter
+\renewcommand{\@listI}{\itemsep=0pt} % Reduce the space between items in the itemize and enumerate environments and the bibliography
+\newcommand{\imagent}[4]{
+  \begin{wrapfigure}{#4}{0.7\textwidth}
+    \begin{center}
+    \includegraphics[width=0.7\textwidth]{#1}
+    \end{center}
+    \caption{#3}
+    \label{#4}
+  \end{wrapfigure}
+}
+
+\newcommand{\imagen}[4]{
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=#4\textwidth]{#1}
+    \captionof{figure}{#2}
+    \label{#3}
+  \end{minipage} 
+}
+
+%Customize enumerate tag
+\usepackage{enumitem}
+%Sections don't get numbered
+%\setcounter{secnumdepth}{0}
+
+
+\usepackage{fontspec}
+\setmainfont{Arial}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={210mm,297mm},
+ left=30mm,
+ right=30mm,
+ top=25mm,
+ bottom=25mm,
+ }
+ 
+ 
+% To include code
+\usepackage{xcolor}
+\usepackage{listings}
+
+% code in bash style
+\lstdefinestyle{BashInputStyle}{
+  language=bash,
+  basicstyle=\small\ttfamily,
+  numberstyle=\tiny,
+  numbersep=3pt,
+  columns=fullflexible,
+  backgroundcolor=\color{gray!20},
+  xleftmargin=0.1\linewidth
+}
+\renewcommand*{\newunitpunct}{\newline\space}
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University Assignment Title Page 
+% LaTeX Template
+% Version 1.0 (27/12/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% WikiBooks (http://en.wikibooks.org/wiki/LaTeX/Title_Creation)
+% Modified by: NCordon (https://github.com/NCordon)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+% Instructions for using this template:
+% This title page is capable of being compiled as is. This is not useful for 
+% including it in another document. To do this, you have two options: 
+%
+% 1) Copy/paste everything between \begin{document} and \end{document} 
+% starting at \begin{titlepage} and paste this into another LaTeX file where you 
+% want your title page.
+% OR
+% 2) Remove everything outside the \begin{titlepage} and \end{titlepage} and 
+% move this file to the same directory as the LaTeX file you wish to add it to. 
+% Then add \input{./title_page_1.tex} to your LaTeX file where you want your
+% title page.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+~\\~\\~\\~\\~\\
+\bigskip
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+\textsc{\LARGE Universidad de Granada}\\[1.5cm]
+\textsc{\Large Ingeniería de Servidores}\\[0.5cm] 
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+\bigskip
+\HRule \\[0.4cm]
+{ \huge \bfseries IOStat,\\ comprobación experimental de su funcionamiento y significado de algunas medidas
+que más afecten al rendimiento	}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{center} \large
+%\emph{Ignacio Cordón Castillo}\\
+\end{center}
+\end{minipage}
+
+%----------------------------------------------------------------------------------------
+%	LOGO SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{center}
+\includegraphics[width=9cm]{./ugr.jpg}
+\end{center}
+%----------------------------------------------------------------------------------------
+
+\vspace{\fill}% Fill the rest of the page with whitespace
+\large\today
+\end{titlepage}  
+
+\newpage
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+\setcounter{page}{1}
+% Examples of inclussion of images
+%\imagent{ugr.jpg}{Logo de prueba}{ugr}
+%\imagen{ugr.jpg}{Logo de prueba}{ugr2}{size relative to the \textwidth}
+
+
+\section{Resumen}
+Monitorizar el empleo de discos es una función básica en las competencias de un administrador de un servidor, o incluso
+podría ser aprovechado por un usuario medio.
+
+A lo largo de este texto se analizará un monitor de dispositivos llamado \texttt{IOStat}, que viene por defecto instalado
+en algunos sistemas UNIX y se constatará mediante la ejecución de un experimento en que se medirán distintos tipos de medios 
+de almacenamiento mediante un experimento confeccionado a tales fines: se probarán distintos tipos de disco
+duro: IDE,SATA; distintos formatos de partición: NTFS, FAT32,\ldots; y distintas revoluciones por minuto: 3600 rpm, 5400 rpm y 7200 rpm.
+
+Asimismo, también efectuaremos un experimento en el que analizaremos su uso como monitor de CPUs: se probarán varios
+tipos de CPU, variando factores como la velocidad(en Hz), el número de cores, \ldots para correr un programa del que es
+conocido que somete a la CPU a mucha carga.
+\section{Introducción}
+Cuando como administradores de un sistema estamos en la obligación de ofrecer una determinada calidad de servicio (cubrir
+necesidades mínimas de los usuarios que emplearán el sistema), y deseamos mejorar tanto la utilización de CPU como la utilización de 
+memoria de disco, podemos usar un monitor de CPU o de dispositivos, respectivamente.
+
+La pregunta es por qué es deseable optimizar esta parte de un sistema operativo, cuando hay muchos más campos que se pueden
+mejorar en un sistema. La respuesta a esta pregunta se basa en que en el empleo de disco se encuentran los mayores cuellos de
+botella en un ordenador. Porque una transferencia a  disco es del orden de 2000000 de veces más lenta que una transferencia a
+caché de nivel L1, y del orden de 40 veces más lenta que la memoria RAM, y por tanto es potenciablemente optimizable. \cite{conferencia}
+
+IOstat es un ejemplo de estos monitores. Se trata de un sampling monitor (monitor que funciona a intervalos regulares de
+tiempo), de tipo software, que recoge información sobre el empleo de CPU y de dispositivos, basándose en el empleo de la información almacenada
+en los sistemas UNIX en \texttt{/proc}.
+
+Para proporcionar una calidad de servicio determinada, en ocasiones es importante detectar los cuellos de botella en el empleo
+de la memoria o de la CPU. Y \texttt{IOStat} puede ayudarnos a llevar a cabo ese fin. Por ejemplo, nos podría ayudar a rebalancear
+la carga entre discos duros; si por ejemplo tenemos varios discos duros y uno de ellos se emplea más que el resto, en términos
+de cantidad de datos totales escritos o leídos, puede ayudarnos a redistribuir los archivos a los que más se accede, localizando
+el disco duro en el que se encuentran; o si incluso uno de los discos duros es más rápido que el resto (información que 
+también puede estraerse de los informes que genera el monitor), podemos colocar los archivos de los usuarios que más uso generen en dicho
+disco duro, o incluso los datos a los que más se accede, para optimizar el sistema. En IOStat no existe interacción con el 
+administrador/analista, obteniendo sus datos de \texttt{/proc/diskstats}
+%(?).
+En muchas ocasiones, los archivos más accedidos en un sistema son los del sistema operativo, y por tanto el monitor nos podrá
+ayudar a determinar a qué disco o partición mover los archivos en función de la rapidez de cada una. \cite{merelo}
+
+Su uso principal es la monitarización de la memoria, ya que para la monitarización de la CPU existen herramientas mucho más
+completas, como el comando de UNIX \texttt{top}, pero constituyen sólo  un front-end al sistema de archivos \texttt{/proc}, y no
+puede mostrar información que un sistema UNIX de por sí tampoco pueda. \cite{readme}
+
+\section{Memoria}
+\subsection{IOStat \cite{maniostat}}
+El comando \texttt{iostat}, del paquete \texttt{sysstat} está disponible en UNIX empleado para monitorizar la carga de E/S de un sistema,
+así como el uso de la CPU. Para la monitorización E/S se basa en computar el tiempo que un dispositivo de E/S está activo en 
+relación a su ratio medio de transferencia. El comando está escrito en C, y está disponible bajo licencia GNU Public License v2.
+
+El comando genera dos informes estadísticos: uno sobre el uso de CPU y otro sobre uso de E/S. Para mostrar cada uno, ocultando
+el otro, basta usar \texttt{iostat -c} o \texttt{iostat -d} respectivamente. Respecto a las estadísticas CPU, cabe mencionar
+que si se está ejecutando el comando en un sistema multiprocesador, las estadísticas mostradas constituyen una media de todos
+los núcleos. Por defecto se muestran ambos informes. La primera vez que se ejecuta el comando, muestra las estadísticas 
+recopiladas desde la última vez que se reinició el sistema. Las sucesivas veces se muestran estadísticas acumuladas desde la
+última vez que el comando reunió información sobre el sistema. La sintaxis del comando es:
+
+  \begin{lstlisting}[style=BashInputStyle]
+  iostat [opciones] [dispositivo] interval count
+  \end{lstlisting}
+  
+  Donde \texttt{opciones} son los distintos flags que se le pueden pasar al comando, entre los que destacan, aparte de los ya
+  mencionados:
+  
+  \begin{itemize}
+   \item \texttt{-j \{ID | LABEL | PATH | UUID |\ldots\}}: muestra para cada dispositivo la etiqueta, el UUID,\ldots correspondiente,
+   en función de lo que hayamos indicado en el comando en lugar del descriptor de bloques /dev/sdX-n usado para identificar a los dispositivos
+   por defecto.
+   \item \texttt{-k}: muestra las estadísticas expresándolas en kilobytes por segundo.
+   \item \texttt{-m}: muestra las estadísticas expresándolas en megabytes por segundo.
+   \item \texttt{-p}: proporciona estadísticas no sólo para cada dispositivo, sino también para las particiones presentes en cada
+   dispositivo.
+   \item \texttt{-t}: hace que en los informes se incluya también un timestamp con la hora a la que corresponden.
+   \item \texttt{-x}: muestra estadísticas expandidas. Si no se usa esta opción, se muestran para cada dispositivo solamente
+   los valores: \texttt{tps, kB\_read/s, kB\_wrtn/s, KB\_read, kB\_wrtn}. Si se emplea dicha opción se muestra toda la
+   información descrita en \ref{optdisp}, excepto los campos mencionados anteriormente.
+   \item \texttt{-y}: omite el primero de los informes (información acumulada desde el último reinicio).
+   \item \texttt{-z}: omite en los informes aquellos dispositivos para los que no se registró actividad durante la acumulación
+   de información.
+  \end{itemize}
+
+\texttt{interval} y \texttt{count} son dos números naturales. Son omitibles ambos, o sólo \texttt{count}. \texttt{interval} indica
+a \texttt{iostat} la duración del intervalo de tiempo, en segundos, durante el cual debe recopilar información; una vez vencido
+ese tiempo se mostrará por pantalla un reporte de información concerniente a ese periodo de tiempo. \texttt{count} indica al comando
+cuántos informes se quieren. Por ejemplo, si se llama al comando de la forma:
+
+\begin{lstlisting}[style=BashInputStyle]
+  iostat 5 10
+\end{lstlisting}
+  
+entonces \texttt{iostat} mostrará 10 informes, uno cada 5 segundos, tanto de estadísticas CPU como de estadísticas de memoria.
+
+Si se omite el parámetro \texttt{count} entonces \texttt{iostat} mostrará información cada vez que venza el tiempo indicado en \texttt{interval},
+hasta que se interrumpa la ejecución del comando.
+
+Si se omiten ambos parámetros, se mostrará un único informe (CPU+memoria si no se ha indicado que se muestre uno de ellos solamente).
+
+Por omisión se genera información para todos los dispositivos de memoria disponibles en el sistema, si no se indica lo contrario
+con el parámetro \texttt{dispositivo}. Por ejemlo, la siguiente llamada a \texttt{iostat}:
+
+\begin{lstlisting}[style=BashInputStyle]
+  iostat /dev/sda /dev/sdb
+\end{lstlisting}
+
+generaría información únicamente para los dispositivos correspondientes a los descriptores \texttt{/dev/sda} y \texttt{/dev/sdb}.
+
+\subsubsection{Informe CPU}
+La información aportada incluye:
+\begin{itemize}
+ \item \texttt{\%user}: porcentaje de uso CPU en el nivel usuario (generados por la ejecución de aplicaciones).
+ \item \texttt{\%nice}: porcentaje de uso CPU correspondiente a procesos con prioridad cambiada.
+ % Expandir
+ \item \texttt{\%system}: porcentaje de uso CPU en el nivel kernel.
+ \item \texttt{\%iowait}: porcentaje de tiempo que la CPU ha estado ociosa esperando a peticiones E/S.
+ \item \texttt{\%steal}: porcentaje de tiempo empleado en espera por un núcleo virtual mientras el hipervisor servía a otro
+ núcleo virtual. Este parámetro es útil cuando se están realizando virtualizaciones, por ejemplo con Virtualbox, y el número de
+ virtualizaciones simultáneas es mayor que el número de núcleos físicos en la máquina.
+ \item \texttt{\%idle}: porcentaje de tiempo que la CPU estuvo ociosa mientras el sistema no tenía una petición E/S pendiente.
+\end{itemize}
+
+\subsubsection{Informe dispositivos}
+\label{optdisp}
+La información mostrada puede incluir (en función de si se emplea la opción \texttt{-x} o no):
+\begin{itemize}
+ \item{\texttt{Device}}: descriptor de dispositivo \texttt{/dev/sdX} o de partición \texttt{/dev/sdXn}, donde \texttt{X} es una
+ letra única que identifica a cada dispositivo y \texttt{n} un número que identifica de forma unívoca cada partición para un
+ dispositivo dado.
+ \item{\texttt{tps}}: número de transferencias pro segundo a un dispositivo. Una transferencia es una petición E/S que puede
+ incluir varias peticiones lógicas de E/S combinadas. Esto es, si se intentan leer varios datos desde disco duro simultáneamente,
+ puede que se hallen en el mismo bloque de disco duro o en bloques contiguos, y varias peticiones de datos dan lugar a una única
+ petición de E/S. Así, una petición de E/S no tiene un tamaño fijo.
+ \item{\texttt{KB\_read/s}}: número de KB leídos del dispositivo por segundo.
+ \item{\texttt{KB\_wrtn/s}}: número de KB escritos al dispositivo por segundo.
+ \item{\texttt{KB\_read}}: número de KB leídos en total desde el dispositivo.
+ \item{\texttt{KB\_wrtn}}: número de KB escritos en total al dispositivo.
+ \item{\texttt{rrqm/s}}: número de peticiones de lectura combinadas por segundo.
+ \item{\texttt{wrqm/s}}: núero de peticiones de escritura combinadas por segundo.
+ \item{\texttt{r/s}}: número de peticiones de lectura(ya combinadas) completadas por segundo.
+ \item{\texttt{w/s}}: número de peticiones de escritura(ya combinadas) completadas por segundo.
+ \item{\texttt{rKB/s}}: equivalente a \texttt{KB\_read/s}.
+ \item{\texttt{wKB/s}}: equivalente a \texttt{KB\_wrtn/s}.
+ \item{\texttt{avgrq-sz}}: número medio de peticiones de lectura, en bloques (en los kernels más modernos 1 bloque equivale a 512KB) emitidas
+ al dispositivo.
+ \item{\texttt{avgu-sz}}: longitud media de la cola para las peticiones emitidas al dispositivo.
+ \item{\texttt{await}}: media en milisegundos que tarda una petición en ser servida (incluyendo tiempo de servicio y de cola).
+ \item{\texttt{r\_await}}: media en milisegundos que tarda una petición de lectura en ser servida.
+ \item{\texttt{w\_await}}: media en milisegundos que tarda una petición de escritura en ser servida.
+ \item{\texttt{svctm}}: media en milisegundos de tiempo de servicio para las peticiones E/S emitidas al dispositivo.
+ \item{\texttt{\%util}}: bandwith del dispositivo.
+\end{itemize}
+
+\section{Evaluación de prestaciones con IOStat}
+Vamos a efectuar un análisis de prestaciones sobre varios tipos de discos duros, determinando la velocidad de cada 
+disco en el copiado de archivos. Los discos duros podrán tener particiones de diferente tipo y tamaño.
+
+\subsection{Definición del sistema}
+El principal objetivo del estudio es comparar la velocidad del copiado de archivos en varios discos duros con particiones
+en distintos formatos. En otras palabras, determinar cuál es el tipo de almacenamiento más rápido. El estudio se centrará
+por tanto en discos duros, conectados todos ellos (no simultáneamente) a un equipo con las siguientes características:
+
+%Completar.
+
+Obviaremos del equipo todo aquellos componentes que no interfieran en la transferencia de archivos. Nuestro sistema estará
+conformado por tanto por varios discos duros interconectados por un bus de E/S.
+
+\subsection{Servicios proporcionados por el sistema}
+El servicio principal proporcionado por el sistema es la transferencia y lectura de datos.
+
+\subsection{Métricas}
+Dado que se dispone de limitaciones en los recursos hardware para evaluar las prestaciones, hay ciertos modelos de almacenamiento
+que no serán estudiados. Para cada modelo de almacenamiento, se evaluará los recursos consumidos por la transferencia, así
+como el tiempo invertido. Por tanto aparecen las siguientes métricas para evaluar las prestaciones:
+
+\begin{itemize}
+ \item Número de Kilobytes escritos en el dispositivo por segundo (\texttt{KB\_wrtn/s} en \texttt{IOStat})
+ \item Número de peticiones de escritura completadas en el dispositivo por segundo.
+ \item Tamaño de las peticiones de escritura al dispositivo.
+ \item Número total de peticiones de escritura efectuadas al dispositivo.
+ \item Tamaño de la cola en el dispositivo durante la transferencia.
+ \item Tiempo de espera de las petciones de escritura en el disco. (\texttt{r\_await} en \texttt{IOStat})
+\end{itemize}
+
+\subsection{Parámetros}
+Los parámetros del sistema que influyen en las prestaciones serán:
+\begin{itemize}
+ \item Tipo de disco duro (SSD, magnético).
+ \item Tipo de conexión del disco duro (IDE, SATA, USB 2.0, USB 3.0, \ldots).
+ \item Tamaño de memoria caché del disco duro.
+ \item Número de revoluciones por minuto del disco duro (en caso de ser magnético, ya que los discos de estado sólido no tienen
+ velocidad de rotación - 3600, 5400, 7200).
+ \item Tamaño de la partición que se empleará en el disco duro.
+ \item Tipo de partición (NTFS, FAT32, \ldots).
+ 
+ \cite{hddparam}
+\end{itemize}
+
+Los parámetros de la carga que influyen en las prestaciones son:
+\begin{itemize}
+ \item Tamaño de transferencia.
+ \item Número de transferencias simultáneas.
+\end{itemize}
+
+\subsection{Factores}
+Los factores seleccionados para este estudio son:
+
+\begin{itemize}
+ \item Tipo de disco duro.
+ \item Tipo de conexión del disco duro.
+ \item Tamaño de caché de disco duro.
+ \item Revoluciones por minuto del disco duro.
+ \item Número de transferencias simultáneas $n=1,2,\ldots5$
+ 
+ Se ha optado por considerar el tamaño del archivo a enviar fijo. Se empleará para ello un archivo test de tamaño 4,3 GB 
+ (4.292.856.832 bytes).
+ 
+\end{itemize}
+
+
+
+
+
+
+Dispondremos de varios discos duros:
+\begin{itemize}
+ \item %Completar
+ \item %Completar
+\end{itemize}
+
+
+
+
+
+\newpage
+
+\newpage
+\printbibliography
+\end{document}

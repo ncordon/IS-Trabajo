@@ -1,0 +1,227 @@
+<H3>
+Introduction 
+</H3> 
+ 
+<P>
+This report plots the iostat output contained in file: 
+./data/fat32/ST320410A/log-2.out. The devices analyzed are: 
+<UL> 
+   <LI>sdb 
+</UL> 
+For each devices there are a series of plots of the output 
+from iostat that was captured. The report is contained in a
+subdirectory HTML_REPORT. In that directory you will find a 
+file name report.html. Just open that file in a browser 
+and you will see the plots. Please note that all plots are 
+referenced to the beginning time of the iostat run. 
+</P>
+ 
+<P> 
+IOstat outputs a number of basic system parameters when it 
+creates the output. These parameters are listed below. 
+<UL> 
+   <LI>System Name: equipo-pc 
+   <LI>OS: Linux 
+   <LI>Kernel: 3.13.0-48-generic 
+   <LI>Number of Cores 1 
+   <LI>Core Type _i686_ 
+</UL> 
+The iostat run was started on 05/01/2015 at 
+07:03:36. 
+</P> 
+<P> 
+Below are hyperlinks to various plots within the report 
+for each device. 
+<BR><BR> 
+<strong>sdb</strong>: 
+<OL start=1> 
+   <LI><a href="#cpu_utilization0">CPU Utilization</a> 
+   <LI><a href="#iowait_cpu_utilization0">IOwait Percentage Time</a> 
+   <LI><a href="#steal_cpu_utilization0">Steal Percentage Time</a> 
+   <LI><a href="#idle_cpu_utilization0">Idle Percentage Time</a> 
+   <LI><a href="#rmb_total_cpu0">Read Throughput and Total CPU Utilization</a> 
+   <LI><a href="#wmb_total_cpu0">Write Throughput and Total CPU Utilization</a> 
+   <LI><a href="#requests_complete_total_cpu0">Read Requests Complete Rate, Write Requests Complete Rate, and Total CPU Utilization</a> 
+   <LI><a href="#requests_merged_total_cpu0">Read Requests Merged Rate, Write Requests Merged Rate, and Total CPU Utilization</a> 
+   <LI><a href="#requests_queue_total_cpu0">Average Request Size, Average Queue Length, and Total CPU Utilization Percentage</a> 
+   <LI><a href="#avg_wait_time_total_cpu0">Average Read Request Time, Average Write Request Time, and Total CPU Utilization</a> 
+   <LI><a href="#util_cpu_total_cpu0">Percentage CPU Time for IO Requests and Total CPU Utilization</a> 
+</OL> 
+</P> 
+ 
+<HR> 
+<H3>Device: sdb</H3> 
+<H4> 
+1. <a id="cpu_utilization0">Percentage CPU Time (CPU Utilization)</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This figure plots three types of CPU Utilization: (1) User, 
+(2) System, and (3) Nice. The User utilization is the  percentage 
+of CPU utilization that occurred while executing at the user level 
+(applications).The System utilization is the percentage of CPU 
+utilization that occurred while executing at the system level 
+(kernel). The third time is the Nice utilization which is the 
+percentage of CPU utilization that occurred while executing at 
+the  user  level with nice priority. 
+<center> 
+<img src="percentage_cpu_utilization0.png"> 
+<BR><BR><strong>Figure 1 - Percentage CPU Utilization (User, System, and Nice) for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+2. <a id="iowait_cpu_utilization0">IOWait Percentage Time</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This is the percentage of time that the CPU or CPUs were idle 
+during which the system had an outstanding disk device I/O request. 
+<center> 
+<img src="iowait_percentage_cpu_time0.png"> 
+<BR><BR><strong>Figure 2 - Percentage CPU Time waiting to process disk requests for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+3. <a id="steal_cpu_utilization0">Steal Percentage Time</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This is the percentage of time spent in involuntary 
+wait by the virtual CPU or CPUs while the hypervisor was 
+servicing another virtual processor. 
+<center> 
+<img src="steal_percentage_cpu_time0.png"> 
+<BR><BR><strong>Figure 3 - Percentage CPU Time in involuntary waiting for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+4. <a id="idle_cpu_utilization0">Idle Percentage Time with no IO requests</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This is the percentage of time that the CPU or CPUs were 
+idle and the system did not have an outstanding disk I/O request. 
+<center> 
+<img src="idle_percentage_cpu_time0.png"> 
+<BR><BR><strong>Figure 4 - Percentage CPU Time in idle activities with no IO requests for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+5. <a id="rmb_total_cpu0">Read Throughput and Total CPU Utilization</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This figure has two parts. The top graph plots the Read Rate 
+in MB/s versus time and the bottom graph plots the Total CPU 
+Utilization percentage (User Time + System Time). 
+<center> 
+<img src="read_throughput0.png"> 
+<BR><BR><strong>Figure 5 - Read Throughput (MB/s) and Total CPU Utilization Percentage for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+6. <a id="wmb_total_cpu0">Write Throughput and Total CPU Utilization</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This figure has two parts. The top graph plots the Write Rate 
+in MB/s versus time and the bottom graph plots the Total CPU 
+Utilization percentage (User Time + System Time). 
+<center> 
+<img src="write_throughput0.png"> 
+<BR><BR><strong>Figure 6 - Write Throughput (MB/s) and Total CPU Utilization Percentage for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+7. <a id="requests_complete_total_cpu0">Read Requests Complete, Write Requests Complete, and Total CPU Utilization</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This figure has three parts. The top graph plots the number (after 
+merges) of read requests completed per second for the device 
+versus time. The middle graph plots the number (after merges) 
+of write requests completed per second for the device versus time. 
+The bottom graph plots the Total CPU Utilization percentage 
+(User Time + System Time). 
+<center> 
+<img src="read_write_requests_complete_rate0.png"> 
+<BR><BR><strong>Figure 7 - Read Requests Completed Rate (requests/s), Write Requests Completed Rate (requests/s), and Total CPU Utilization Percentage for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+8. <a id="requests_merged_total_cpu0">Read Requests Merged rate, Write Requests Merged rate, and Total CPU Utilization</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This figure has three parts. The top graph plots the number 
+of read requests merged per second that were queued to the device. 
+The middle graph plots the number of write requests merged per 
+second that were queued to the device. The bottom graph plots 
+the Total CPU Utilization percentage (User Time + System Time). 
+<center> 
+<img src="read_write_requests_merged_rate0.png"> 
+<BR><BR><strong>Figure 8 - Read Requests Merged Rate (requests/s), Write Requests Merged Rate (requests/s), and Total CPU Utilization Percentage for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+9. <a id="requests_queue_total_cpu0">Average Request Size, Average Queue Length, and Total CPU Utilization</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This figure has three parts. The top graph plots the average 
+size (in sectors) of the requests that were issued to the 
+device. The middle graph plots the average queue length of 
+the requests that were issued to the device. The bottom graph 
+plots the Total CPU Utilization percentage (User Time + System 
+Time). 
+<center> 
+<img src="requests_queue_total_cpu0.png"> 
+<BR><BR><strong>Figure 9 - Average Request Size (sectors), Average Queue Length, and Total CPU Utilization Percentage for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+10. <a id="avg_wait_time_total_cpu0">Average Read Request Time (ms), Average Write Request Time (ms), and Total CPU Utilization</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This figure has three parts. The top graph plots the average 
+time (in milliseconds) for read requests issued to 
+the device to be served. This includes the time spent by the 
+requests in queue and the time spent servicing them. The middle 
+graph plots the average time (in milliseconds) for write 
+requests issued to the device to be  served. This includes 
+the time spent by the requests in queue and the time spent 
+servicing them. The bottom graph plots the Total CPU Utilization 
+percentage (User Time + System Time). 
+<center> 
+<img src="avg_request_time_total_cpu0.png"> 
+<BR><BR><strong>Figure 10 - Average Read Request Time (ms), Average Write Request Time (ms), and Total CPU Utilization for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 
+<H4> 
+11. <a id="util_cpu_total_cpu0">Percentage CPU Time for IO Requests and Total CPU Utilization</a>. Device: sdb 
+</H4> 
+ 
+<P> 
+This figure has two parts. The top graph plots the 
+percentage of CPU time during which I/O requests were issued 
+to the device (bandwidth utilization for the device). 
+Device saturation occurs when this value is close to 100%. 
+The bottom graph plots the Total CPU Utilization percentage 
+(User Time + System Time). 
+<center> 
+<img src="util_cpu_total_cp0.png"> 
+<BR><BR><strong>Figure 11 - Percentage CPU Time for IO Requests and Total CPU Utilization for device: sdb</strong></center><BR><BR> 
+<BR><BR> 
+</P> 
+ 

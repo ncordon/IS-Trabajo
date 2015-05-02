@@ -1,0 +1,21 @@
+cpu averages
+	user: 0.869
+	nice: 0.053
+	system: 16.737
+	iowait: 82.341
+	steal: 0.0
+	idle: 0.0
+sde averages:
+	util: 111.847
+	r_await: 0.8
+	avgqusz: 153.51
+	await: 589.643
+	rMB: 0.0
+	svctm: 4.435
+	r: 0.053
+	wrqm: 1.01
+	w: 252.259
+	avgrqsz: 236.609
+	wMB: 29.155
+	rrqm: 0.0
+	w_await: 589.777
