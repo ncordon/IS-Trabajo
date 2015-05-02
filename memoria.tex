@@ -150,6 +150,12 @@
   backgroundcolor=\color{gray!20},
   xleftmargin=0.1\linewidth
 }
+
+%changes colour of texttt
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[2][black!60]{\textcolor{#1}{\ttfamily #2}}
+
+
 \renewcommand*{\newunitpunct}{\newline\space}
 \begin{document}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -392,40 +398,41 @@ disco en el copiado de archivos. Los discos duros podrán tener particiones de d
 \subsection{Definición del sistema}
 El principal objetivo del estudio es comparar la velocidad del copiado de archivos en varios discos duros con particiones
 en distintos formatos. En otras palabras, determinar cuál es el tipo de almacenamiento más rápido. El estudio se centrará
-por tanto en discos duros, conectados todos ellos (no simultáneamente) a un equipo con las siguientes características:
+por tanto en discos duros. Se dispondrá de dos discos duros conectados a la misma placa madre, uno que alojará los datos a
+transferir, y otro que será el encargado de recibir los datos transferidos.
 
-%Completar.
-
-Obviaremos del equipo todo aquellos componentes que no interfieran en la transferencia de archivos. Nuestro sistema estará
-conformado por tanto por varios discos duros interconectados por un bus de E/S.
+Obviaremos del equipo al que conectaremos los discos duros todo aquellos componentes que no interfieran en la transferencia 
+de archivos.
 
 \subsection{Servicios proporcionados por el sistema}
-El servicio principal proporcionado por el sistema es la transferencia y lectura de datos.
+El servicio principal proporcionado por el sistema es la transferencia de datos entre discos duros.
 
 \subsection{Métricas}
-Dado que se dispone de limitaciones en los recursos hardware para evaluar las prestaciones, hay ciertos modelos de almacenamiento
-que no serán estudiados. Para cada modelo de almacenamiento, se evaluará los recursos consumidos por la transferencia, así
-como el tiempo invertido. Por tanto aparecen las siguientes métricas para evaluar las prestaciones:
-
+Llamaremos modelo de almacenamiento a la combinación de: sistema de archivos + tipo de conexión del disco duro + velocidad de rotación \ldots.
+Para cada modelo de almacenamiento, se evaluará la velocidad de transferencia. Por tanto, la métrica empleada para evaluar las prestaciones 
+del disco duro será: \textbf{número de kilobytes escritos en el dispositivo por segundo} (\texttt{KB\_wrtn/s} en IOStat).
+ 
+ Asimismo, se hará un análisis de los siguientes datos referentes a los dispositivos, que condicionan la tasa de transferencia
+ ($\approx$ velocidad de transferencia):
 \begin{itemize}
- \item Número de Kilobytes escritos en el dispositivo por segundo (\texttt{KB\_wrtn/s} en \texttt{IOStat})
- \item Número de peticiones de escritura completadas en el dispositivo por segundo.
- \item Tamaño de las peticiones de escritura al dispositivo.
- \item Número total de peticiones de escritura efectuadas al dispositivo.
- \item Tamaño de la cola en el dispositivo durante la transferencia.
- \item Tiempo de espera de las petciones de escritura en el disco. (\texttt{r\_await} en \texttt{IOStat})
+ \item Número de peticiones de escritura completadas en el dispositivo por segundo. (\texttt{r/s} en IOStat).
+ \item Tamaño de las peticiones de escritura al dispositivo (\texttt{avgqu-sz} es la media de dichos tiempos en
+ IOStat).
+ \item Tamaño de la cola en el dispositivo durante la transferencia. (\texttt{avgu-sz} representa la media del
+ tamaño de la cola en IOStat).
+ \item Tiempo que tardan las peticiones de escritura en ser servidas. (\texttt{w\_await} proporciona la media
+ de dicho tiempo en IOStat).
+ \item Ancho de banda del dispositivo (\texttt{\%util} en IOStat).
 \end{itemize}
 
 \subsection{Parámetros}
-Los parámetros del sistema que influyen en las prestaciones serán:
+Se trabajará únicamente con discos duros magnéticos de 3.5'' (diámetro del disco).
+Así los parámetros del sistema que influyen en las prestaciones serán:
 \begin{itemize}
- \item Tipo de disco duro (SSD, magnético).
- \item Tipo de conexión del disco duro (IDE, SATA, USB 2.0, USB 3.0, \ldots).
+ \item Tipo de conexión del disco duro (IDE, SATA, USB 2.0, USB 3.0 \ldots).
  \item Tamaño de memoria caché del disco duro.
- \item Número de revoluciones por minuto del disco duro (en caso de ser magnético, ya que los discos de estado sólido no tienen
- velocidad de rotación - 3600, 5400, 7200).
- \item Tamaño de la partición que se empleará en el disco duro.
- \item Tipo de partición (NTFS, FAT32, \ldots).
+ \item Velocidad de rotación del disco duro (3600, 5400, 7200 rpm).
+ \item Tipo de particionado del disco duro (NTFS, FAT32, \ldots).
  
  \cite{hddparam}
 \end{itemize}
@@ -435,40 +442,43 @@ Los parámetros de la carga que influyen en las prestaciones son:
  \item Tamaño de transferencia.
  \item Número de transferencias simultáneas.
 \end{itemize}
-
+Para seleccionar dichos parámetros nos hemos basado en el hecho empírico de que cuando se realiza una única transferencia,
+el ancho de banda del dispositivo no alcanza el máximo, mientras que si se están realizando varias transferencias
+simultáneas, el ancho de banda medio está muy cerca del 100\% y por tanto, el disco duro disminuye sus prestaciones.
 \subsection{Factores}
 Los factores seleccionados para este estudio son:
-
 \begin{itemize}
- \item Tipo de disco duro.
  \item Tipo de conexión del disco duro.
- \item Tamaño de caché de disco duro.
+ \item Tipo de particionado del disco duro.
+ \item Tamaño de caché del disco duro.
  \item Revoluciones por minuto del disco duro.
  \item Número de transferencias simultáneas $n=1,2,\ldots5$
 \end{itemize}
-
  A pesar de que se han seleccionado como factores los tipos de disco duro y conexión, y la velocidad de rotación, debido a 
- limitaciones de disponibilidad de hardware habrá casuísticas que no podrán testearse (SSD, discos de 7200 revoluciones). Los
+ limitaciones de disponibilidad de hardware habrá casuísticas que no podrán evaluarse. Los
  experimentos se realizarán con el equipo sobre el que se testeará liberado de cargas innecesarias, por lo que consideraremos
  el error introducido entre medidas en distintos discos duros y el error introducido entre pruebas al mismo disco duro con distinto
- número de transferencias simultáneas insignificante.
+ número de transferencias simultáneas insignificantes.
  
  \subsection{Técnica de evaluación}
- Se dispondrá de un sistema real con las siguientes características hardware y software para realizar el experimento:
+ Se dispondrá de un equipo de sobremesa con las siguientes características hardware y software para realizar el experimento:
  \begin{itemize}
-  \item 
+  \item Sistema Operativo: Ubuntu 14.04 LTS, 32 bits
+  \item Memoria RAM: 1 GB
+  \item CPU: Intel Celeron 3.06 GHz.
  \end{itemize}
  Por tanto la técnica de evaluación seleccionada es \textbf{medición sobre un sistema real}. Emplearemos el programa
- IOStat para efectuar la monitorización de la transferencia.
+ IOStat para efectuar la monitorización de la transferencia, tomando muestreos de información cada 2 segundos durante
+ la transferencia de los ficheros.
 
  \subsection{Carga de trabajo}
  La carga consistirá en efectuar copias simultáneas de varios ficheros al disco duro. Se ha optado por mantener
- un fichero de tamaño fijo (4,3 GB) que se copiará 1,2,3\ldots 5 veces de forma simultánea desde uno de los discos
- del sistema (el que contiene el SO) al disco duro a evaluar.%referenciar
+ un fichero de tamaño fijo (599.8 MB) que se copiará 1,2,3\ldots 5 veces de forma simultánea desde uno de los discos
+ del sistema al disco duro a evaluar.%referenciar
  
  \subsection{Diseño experimental}
  Se empleará un diseño multi-factorial fraccionado, dado que no es posible evaluar todos los niveles de todos los factores
- que afectan al rendimiento.
+ que afectan al rendimiento. 
  
  \subsection{Análisis de datos}
  
@@ -476,17 +486,28 @@ Los factores seleccionados para este estudio son:
  
  
  \section{Desarrollo experimental}
-
-
-
-
-Dispondremos de varios discos duros:
+Dispondremos de varios discos duros (entre paréntesis se incluye el código por el que identificaremos al disco
+de ahora en adelante): \label{discos}
 \begin{itemize}
- \item %Completar
- \item %Completar
+ \item [][M1] Maxtor 6K040L0, IDE, 2MB caché, 7200 rpm.
+ \item [][S1] Seagate ST34321A IDE, 128KB caché, 5400 rpm.
+ \item [][S2] Seagate ST320410A IDE, 2MB caché, 5400 rpm. 
+ \item [][S3] Seagate ST320413A IDE, 512KB caché, 5400 rpm.
+ \item [][S4] Seagate ST3320613AS SATA, 16MB caché, 7200 rpm. 
+ \item [][WD1] Western Digital WD800JD SATA, 8MB caché, 7200 rpm.
+ \item [][WD2] Western Digital WDBUZG0010BBK externo, USB 3.0, 5400 rpm.
 \end{itemize}
+Se emplearán particiones de tipo: ext4, FAT32, NTFS, exceptuando el disco [WD1], que sólo se ha podido evaluar
+formateado en ext4. Aunque la conexión incluida en [WD2] era USB 3.0, sólo ha podido evaluarse con USB 2.0, debido
+a las características del equipo empleado.
 
-
+Se ha confeccionado un script \texttt{bash} que recoge para los discos duros que le indiquemos(a través de su punto de montaje
+en el sistema de archivos), las medias de todos los datos proporcionados por IOStat, tanto a nivel de CPU, como
+en la evaluación de dispositivos en un archivo de nombre \texttt{averages}. También proporciona los datos recogidos
+para cada parámetro, ordenados temporalmente según se recogieron en un archivo de nombre \texttt{data}. Realiza 
+5 iteraciones, realizando en cada iteración $i$ copias simultáneas, donde $i$ es el número de la iteración. Y almacena
+los datos recogidos en una carpeta de nombre el modelo de disco duro (obtenido mediante el comando \texttt{lsblk}), con
+los datos recogidos clasificados en directorios identificados por el número de copias simultáneas.
 
 
 
