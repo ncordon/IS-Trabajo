@@ -84,7 +84,10 @@
   xleftmargin=0.1\linewidth
 }
 
-
+\lstdefinestyle{pystyle}{
+  language=python,
+  basicstyle=\small\ttfamily
+}
 % To change level of indentation
 \newenvironment{answer}{%
 \begin{list}{}{%
@@ -240,17 +243,12 @@ que más afecten al rendimiento	}\\[0.4cm] % Title of your document
 
 
 \section{Resumen}
-Monitorizar el empleo de discos es una función básica en las competencias de un administrador de un servidor, o incluso
-podría ser aprovechado por un usuario medio.
+Monitorizar el empleo de discos es una función básica en las competencias de un administrador de un servidor.
 
-A lo largo de este texto se analizará un monitor de dispositivos llamado \texttt{IOStat}, que viene por defecto instalado
-en algunos sistemas UNIX y se constatará mediante la ejecución de un experimento en que se medirán distintos tipos de medios 
-de almacenamiento mediante un experimento confeccionado a tales fines: se probarán distintos tipos de disco
-duro: IDE,SATA; distintos formatos de partición: NTFS, FAT32,\ldots; y distintas revoluciones por minuto: 3600 rpm, 5400 rpm y 7200 rpm.
-
-Asimismo, también efectuaremos un experimento en el que analizaremos su uso como monitor de CPUs: se probarán varios
-tipos de CPU, variando factores como la velocidad(en Hz), el número de cores, \ldots para correr un programa del que es
-conocido que somete a la CPU a mucha carga.
+A lo largo de este texto se analizará un monitor de dispositivos llamado IOStat, que viene por defecto instalado
+en algunos sistemas UNIX y se constatará su funcionamiento mediante la ejecución de un experimento en que se medirán distintos tipos de medios 
+de almacenamiento: se probarán distintos tipos de disco
+duro: IDE,SATA,disco duro externo; distintos formatos de partición: NTFS, FAT32,\ldots; distintas revoluciones por minuto: 5400 rpm, 7200 rpm.
 \section{Introducción}
 Cuando como administradores de un sistema estamos en la obligación de ofrecer una determinada calidad de servicio (cubrir
 necesidades mínimas de los usuarios que emplearán el sistema), y deseamos mejorar tanto la utilización de CPU como la utilización de 
@@ -262,37 +260,37 @@ botella en un ordenador. Porque una transferencia a  disco es del orden de 20000
 caché de nivel L1, y del orden de 40 veces más lenta que la memoria RAM, y por tanto es potenciablemente optimizable. \cite{conferencia}
 
 IOstat es un ejemplo de estos monitores. Se trata de un sampling monitor (monitor que funciona a intervalos regulares de
-tiempo), de tipo software, que recoge información sobre el empleo de CPU y de dispositivos, basándose en el empleo de la información almacenada
-en los sistemas UNIX en \texttt{/proc}.
+tiempo), de tipo software, que recoge información sobre el empleo de CPU y de dispositivos basándose en el empleo de la información almacenada
+en los sistemas UNIX en \texttt{/proc}. Concretamente, obtiene sus datos sobre los dispositivos directamente desde
+\texttt{/proc/diskstats}, no existiendo interacción con el administrador/analista. 
 
-Para proporcionar una calidad de servicio determinada, en ocasiones es importante detectar los cuellos de botella en el empleo
-de la memoria o de la CPU. Y \texttt{IOStat} puede ayudarnos a llevar a cabo ese fin. Por ejemplo, nos podría ayudar a rebalancear
+Entre otras cosas, nos podría ayudar a rebalancear
 la carga entre discos duros; si por ejemplo tenemos varios discos duros y uno de ellos se emplea más que el resto, en términos
 de cantidad de datos totales escritos o leídos, puede ayudarnos a redistribuir los archivos a los que más se accede, localizando
 el disco duro en el que se encuentran; o si incluso uno de los discos duros es más rápido que el resto (información que 
-también puede estraerse de los informes que genera el monitor), podemos colocar los archivos de los usuarios que más uso generen en dicho
-disco duro, o incluso los datos a los que más se accede, para optimizar el sistema. En IOStat no existe interacción con el 
-administrador/analista, obteniendo sus datos de \texttt{/proc/diskstats}
+también puede extraerse de los informes que genera el monitor), podemos colocar los archivos de los usuarios que más uso generen en dicho
+disco duro para optimizar el sistema. 
 %(?).
 En muchas ocasiones, los archivos más accedidos en un sistema son los del sistema operativo, y por tanto el monitor nos podrá
-ayudar a determinar a qué disco o partición mover los archivos en función de la rapidez de cada una. \cite{merelo}
+ayudar a determinar a qué disco mover los archivos en función de la rapidez de cada uno. \cite{merelo}
 
 Su uso principal es la monitarización de la memoria, ya que para la monitarización de la CPU existen herramientas mucho más
-completas, como el comando de UNIX \texttt{top}, pero constituyen sólo  un front-end al sistema de archivos \texttt{/proc}, y no
-puede mostrar información que un sistema UNIX de por sí tampoco pueda. \cite{readme}
+completas, como el comando de UNIX \texttt{top}, pero constituyen sólo  un front-end al sistema de archivos \texttt{/proc}, y de hecho
+IOStat no puede mostrar información que un sistema UNIX de por sí tampoco pueda \cite{readme}. Su análisis de dispositivos es el aspecto en
+que nos centraremos en este trabajo.
 
 \section{Memoria}
 \subsection{IOStat \cite{maniostat}}
-El comando \texttt{iostat}, del paquete \texttt{sysstat} está disponible en UNIX empleado para monitorizar la carga de E/S de un sistema,
-así como el uso de la CPU. Para la monitorización E/S se basa en computar el tiempo que un dispositivo de E/S está activo en 
-relación a su ratio medio de transferencia. El comando está escrito en C, y está disponible bajo licencia GNU Public License v2.
+El comando \texttt{iostat}, del paquete \texttt{sysstat} está disponible en UNIX para monitorizar tanto la carga de E/S de un sistema como el uso de la CPU. Para la monitorización E/S se basa en computar el tiempo que un dispositivo de E/S está activo en 
+relación a su ratio tasa de transferencia. El comando está escrito en C, y está disponible bajo licencia GNU Public License v2.
 
 El comando genera dos informes estadísticos: uno sobre el uso de CPU y otro sobre uso de E/S. Para mostrar cada uno, ocultando
 el otro, basta usar \texttt{iostat -c} o \texttt{iostat -d} respectivamente. Respecto a las estadísticas CPU, cabe mencionar
 que si se está ejecutando el comando en un sistema multiprocesador, las estadísticas mostradas constituyen una media de todos
-los núcleos. Por defecto se muestran ambos informes. La primera vez que se ejecuta el comando, muestra las estadísticas 
-recopiladas desde la última vez que se reinició el sistema. Las sucesivas veces se muestran estadísticas acumuladas desde la
-última vez que el comando reunió información sobre el sistema. La sintaxis del comando es:
+los núcleos. Por defecto se muestran ambos informes. La primera vez que el comando ofrece información, muestra las estadísticas 
+recopiladas desde la última vez que se reinició el sistema (por ejemplo siempre que ejecutemos \texttt{iostat} a secas ésta será
+la salida. Las sucesivas veces se muestran estadísticas acumuladas desde la
+última vez que el comando reunió información sobre el sistema. La sintaxis de la orden es:
 
   \begin{lstlisting}[style=BashInputStyle]
   iostat [opciones] [dispositivo] interval count
@@ -303,7 +301,7 @@ recopiladas desde la última vez que se reinició el sistema. Las sucesivas vece
   
   \begin{itemize}
    \item \texttt{-j \{ID | LABEL | PATH | UUID |\ldots\}}: muestra para cada dispositivo la etiqueta, el UUID,\ldots correspondiente,
-   en función de lo que hayamos indicado en el comando en lugar del descriptor de bloques /dev/sdX-n usado para identificar a los dispositivos
+   en función de lo que hayamos indicado en el comando en lugar del descriptor de dispositivo \texttt{/dev/sdX} usado para identificar a los dispositivos
    por defecto.
    \item \texttt{-k}: muestra las estadísticas expresándolas en kilobytes por segundo.
    \item \texttt{-m}: muestra las estadísticas expresándolas en megabytes por segundo.
@@ -311,7 +309,8 @@ recopiladas desde la última vez que se reinició el sistema. Las sucesivas vece
    dispositivo.
    \item \texttt{-t}: hace que en los informes se incluya también un timestamp con la hora a la que corresponden.
    \item \texttt{-x}: muestra estadísticas expandidas. Si no se usa esta opción, se muestran para cada dispositivo solamente
-   los valores: \texttt{tps, kB\_read/s, kB\_wrtn/s, KB\_read, kB\_wrtn}. Si se emplea dicha opción se muestra toda la
+   los valores: \texttt{tps, kB\_read/s, kB\_wrtn/s, KB\_read, kB\_wrtn} (según le hayamos indicado que muestre los
+   tamaños de datos -en megas o kilobytes). Si se emplea dicha opción se muestra toda la
    información descrita en \ref{optdisp}, excepto los campos mencionados anteriormente.
    \item \texttt{-y}: omite el primero de los informes (información acumulada desde el último reinicio).
    \item \texttt{-z}: omite en los informes aquellos dispositivos para los que no se registró actividad durante la acumulación
@@ -319,7 +318,7 @@ recopiladas desde la última vez que se reinició el sistema. Las sucesivas vece
   \end{itemize}
 
 \texttt{interval} y \texttt{count} son dos números naturales. Son omitibles ambos, o sólo \texttt{count}. \texttt{interval} indica
-a \texttt{iostat} la duración del intervalo de tiempo, en segundos, durante el cual debe recopilar información; una vez vencido
+a IOStat la duración del intervalo de tiempo, en segundos, durante el cual debe recopilar información; una vez vencido
 ese tiempo se mostrará por pantalla un reporte de información concerniente a ese periodo de tiempo. \texttt{count} indica al comando
 cuántos informes se quieren. Por ejemplo, si se llama al comando de la forma:
 
@@ -330,23 +329,23 @@ cuántos informes se quieren. Por ejemplo, si se llama al comando de la forma:
 entonces \texttt{iostat} mostrará 10 informes, uno cada 5 segundos, tanto de estadísticas CPU como de estadísticas de memoria.
 
 Si se omite el parámetro \texttt{count} entonces \texttt{iostat} mostrará información cada vez que venza el tiempo indicado en \texttt{interval},
-hasta que se interrumpa la ejecución del comando.
+hasta que se interrumpa su ejecución.
 
 Si se omiten ambos parámetros, se mostrará un único informe (CPU+memoria si no se ha indicado que se muestre uno de ellos solamente).
 
 Por omisión se genera información para todos los dispositivos de memoria disponibles en el sistema, si no se indica lo contrario
-con el parámetro \texttt{dispositivo}. Por ejemlo, la siguiente llamada a \texttt{iostat}:
+con el parámetro \texttt{dispositivo}. Así, la siguiente llamada a \texttt{iostat}:
 
 \begin{lstlisting}[style=BashInputStyle]
   iostat /dev/sda /dev/sdb
 \end{lstlisting}
 
-generaría información únicamente para los dispositivos correspondientes a los descriptores \texttt{/dev/sda} y \texttt{/dev/sdb}.
+generaría información únicamente para los dispositivos correspondientes a los dispositivos de descriptores \texttt{/dev/sda} y \texttt{/dev/sdb}.
 
 \subsubsection{Informe CPU}
 La información aportada incluye:
 \begin{itemize}
- \item \texttt{\%user}: porcentaje de uso CPU en el nivel usuario (generados por la ejecución de aplicaciones).
+ \item \texttt{\%user}: porcentaje de uso CPU en el nivel usuario (generados por la ejecución de aplicaciones por parte de un usuario).
  \item \texttt{\%nice}: porcentaje de uso CPU correspondiente a procesos con prioridad cambiada.
  % Expandir
  \item \texttt{\%system}: porcentaje de uso CPU en el nivel kernel.
@@ -364,23 +363,23 @@ La información mostrada puede incluir (en función de si se emplea la opción \
  \item{\texttt{Device}}: descriptor de dispositivo \texttt{/dev/sdX} o de partición \texttt{/dev/sdXn}, donde \texttt{X} es una
  letra única que identifica a cada dispositivo y \texttt{n} un número que identifica de forma unívoca cada partición para un
  dispositivo dado.
- \item{\texttt{tps}}: número de transferencias pro segundo a un dispositivo. Una transferencia es una petición E/S que puede
- incluir varias peticiones lógicas de E/S combinadas. Esto es, si se intentan leer varios datos desde disco duro simultáneamente,
+ \item{\texttt{tps}}: número de transferencias por segundo a un dispositivo. Una transferencia es una petición E/S que puede
+ incluir varias peticiones lógicas de E/S mezcladas. Esto es, si se intentan leer varios datos desde disco duro simultáneamente,
  puede que se hallen en el mismo bloque de disco duro o en bloques contiguos, y varias peticiones de datos dan lugar a una única
  petición de E/S. Así, una petición de E/S no tiene un tamaño fijo.
- \item{\texttt{KB\_read/s}}: número de KB leídos del dispositivo por segundo.
- \item{\texttt{KB\_wrtn/s}}: número de KB escritos al dispositivo por segundo.
- \item{\texttt{KB\_read}}: número de KB leídos en total desde el dispositivo.
- \item{\texttt{KB\_wrtn}}: número de KB escritos en total al dispositivo.
- \item{\texttt{rrqm/s}}: número de peticiones de lectura combinadas por segundo.
- \item{\texttt{wrqm/s}}: núero de peticiones de escritura combinadas por segundo.
+ \item{\texttt{KB\_read/s} (\texttt{MB\_read/s}}): número de KB (o MB) leídos del dispositivo por segundo.
+ \item{\texttt{KB\_wrtn/s}}: (\texttt{MB\_wrtn/s}) número de KB (o MB) escritos al dispositivo por segundo.
+ \item{\texttt{KB\_read}} (\texttt{MB\_read}): número de KB (o MB) leídos en total desde el dispositivo.
+ \item{\texttt{KB\_wrtn}} (\texttt{MB\_wrtn}): número de KB (o MB) escritos en total al dispositivo.
+ \item{\texttt{rrqm/s}}: número de peticiones de lectura mezcladas por segundo.
+ \item{\texttt{wrqm/s}}: núero de peticiones de escritura mezcladas por segundo.
  \item{\texttt{r/s}}: número de peticiones de lectura(ya combinadas) completadas por segundo.
  \item{\texttt{w/s}}: número de peticiones de escritura(ya combinadas) completadas por segundo.
- \item{\texttt{rKB/s}}: equivalente a \texttt{KB\_read/s}.
- \item{\texttt{wKB/s}}: equivalente a \texttt{KB\_wrtn/s}.
- \item{\texttt{avgrq-sz}}: número medio de peticiones de lectura, en bloques (en los kernels más modernos 1 bloque equivale a 512KB) emitidas
+ \item{\texttt{rKB/s}} (\texttt{rMB/s}): equivalente a \texttt{KB\_read/s} (o \texttt{MB\_read}).
+ \item{\texttt{wKB/s}} (\texttt{wMB/s}): equivalente a \texttt{KB\_wrtn/s} (o \texttt{MB\_wrtn}).
+ \item{\texttt{avgrq-sz}}: número medio de peticiones de lectura, en MB o KB según le hallamos indicado al comando, emitidas
  al dispositivo.
- \item{\texttt{avgu-sz}}: longitud media de la cola para las peticiones emitidas al dispositivo.
+ \item{\texttt{avgqu-sz}}: longitud media de la cola para las peticiones emitidas al dispositivo.
  \item{\texttt{await}}: media en milisegundos que tarda una petición en ser servida (incluyendo tiempo de servicio y de cola).
  \item{\texttt{r\_await}}: media en milisegundos que tarda una petición de lectura en ser servida.
  \item{\texttt{w\_await}}: media en milisegundos que tarda una petición de escritura en ser servida.
@@ -390,16 +389,17 @@ La información mostrada puede incluir (en función de si se emplea la opción \
 
 \section{Evaluación de prestaciones con IOStat}
 Vamos a efectuar un análisis de prestaciones sobre varios tipos de discos duros, determinando la velocidad de cada 
-disco en el copiado de archivos. Los discos duros podrán tener particiones de diferente tipo y tamaño.
+disco en la escritura de archivos. Efectuaremos su benchmarking empleando IOStat.
 
 \subsection{Definición del sistema}
-\imagent{system.jpg}{r}{Equipo usado para realizar el desarrollo experimental}{system}{0.6}El principal objetivo del estudio es comparar la velocidad del copiado de archivos en varios discos duros con particiones
+\imagent{system.jpg}{r}{Equipo usado para el desarrollo experimental}{system}{0.6}El principal objetivo del estudio es comparar la velocidad del copiado de archivos en varios discos duros con particiones
 en distintos formatos. En otras palabras, determinar cuál es el tipo de almacenamiento más rápido. El estudio se centrará
 por tanto en discos duros. Se dispondrá de dos discos duros conectados a la misma placa madre, uno que alojará los datos a
 transferir, y otro que será el encargado de recibir los datos transferidos.
 
 Obviaremos del equipo al que conectaremos los discos duros todo aquellos componentes que no interfieran en la transferencia 
-de archivos.
+de archivos o que no resulten determinantes (como el procesador, que tal y como se refleja en algunas de las gráficas incluidas
+en el presente documento, no se emplea a más del 50\% de su capacidad).
 
 \subsection{Servicios proporcionados por el sistema}
 El servicio principal proporcionado por el sistema es la transferencia de datos entre discos duros.
@@ -407,7 +407,7 @@ El servicio principal proporcionado por el sistema es la transferencia de datos 
 \subsection{Métricas}
 Llamaremos modelo de almacenamiento a la combinación de: sistema de archivos + tipo de conexión del disco duro + velocidad de rotación \ldots.
 Para cada modelo de almacenamiento, se evaluará la velocidad de transferencia. Por tanto, la métrica empleada para evaluar las prestaciones 
-del disco duro será: \textbf{número de kilobytes escritos en el dispositivo por segundo} (\texttt{wKB/s} en IOStat).
+del disco duro será: \textbf{número de kilobytes (o MB) escritos en el dispositivo por segundo} (\texttt{wKB/s} o \texttt{wMB/s} en IOStat).
  
  Asimismo, se hará un análisis de los siguientes datos referentes a los dispositivos, que condicionan la tasa de transferencia
  ($\approx$ velocidad de transferencia):
@@ -422,18 +422,29 @@ del disco duro será: \textbf{número de kilobytes escritos en el dispositivo po
 \end{itemize}
 
 \subsection{Parámetros}
-Se trabajará únicamente con discos duros magnéticos de 3.5'' (diámetro del disco).
-Así los parámetros del sistema que influyen en las prestaciones serán:
+Los parámetros del sistema que influyen en las prestaciones serán: \cite{hddparam}
 \begin{itemize}
  \item Tipo de conexión del disco duro (IDE, SATA, USB 2.0, USB 3.0 \ldots).
  \item Tamaño de memoria caché del disco duro.
  \item Velocidad de rotación del disco duro (3600, 5400, 7200 rpm).
  \item Tipo de particionado del disco duro (NTFS, FAT32, \ldots).
- 
- \cite{hddparam}
 \end{itemize}
+Se justifica el porqué hemos escogido como parámetro el tipo de conexión del disco duro, ya que como
+según \cite{ide}, una conexión IDE puede alcanzar como mucho los 133 MB/s en transferencia de datos,
+mientras una conexión SATA oscila entre unos 150 MB/s y 300 MB/s, y por tanto es un factor importante en la determinación
+de la velocidad de escritura máxima que puede alcanzar una unidad de memoria.
 
-Los parámetros de la carga que influyen en las prestaciones son:
+La caché también influye en la velocidad, al permitir al disco duro servir peticiones de manera más fluida que si
+el disco duro no dispusiese de ella. Tal y como se cita en \cite{cache}: \textit{Equilibra el flujo de datos entre la unidad de discos, 
+que es relativamente lenta, y el resto del equipo al aceptar datos más deprisa de lo que pueden grabarse en el disco o leerse del mismo}.
+
+La velocidad de rotación del disco duro, al igual que el tipo de conexión, determina la velocidad a la que pueden
+escribirse los datos.
+
+Tal y como se reflejará en los resultados, el tipo de particionado puede afectar significativamente a la velocidad de
+escritura en disco.
+
+Los parámetros de la carga que se consideran influyentes en las prestaciones son:
 \begin{itemize}
  \item Tamaño de transferencia.
  \item Número de transferencias simultáneas.
@@ -477,9 +488,9 @@ Los factores seleccionados para este estudio son:
  que afectan al rendimiento. 
  
  \subsection{Análisis de datos}
- 
- \subsection{Presentación de datos}
- 
+ Para contrastar los distintos datos obtenidos se efectuará una media entre los tiempos obtenidos para $1,2\ldots 5$
+ transferencias simultáneas y se compararán dichas medias entre los distintos discos, determinando así empíricamente
+ cuál es el disco más rápido.
  
  \section{Desarrollo experimental}
 Dispondremos de varios discos duros (entre paréntesis se incluye el código por el que identificaremos al disco
@@ -494,20 +505,20 @@ de ahora en adelante): \label{discos}
  \item [][WD2] Western Digital WDBUZG0010BBK externo, USB 3.0, 5400 rpm.
 \end{itemize}
 
-Se ha empleado la versión 10.0.2 del paquete \texttt{sysstat}.
+Se utilizará durante el proceso la versión 10.0.2 del paquete \texttt{sysstat}.
 
 Se emplearán particiones de tipo: ext4, FAT32, NTFS, exceptuando el disco [WD1], que sólo se ha podido evaluar
 formateado en ext4. Aunque la conexión incluida en [WD2] era USB 3.0, sólo ha podido evaluarse con USB 2.0, debido
-a las características del equipo empleado.
+a las características del equipo empleado, que carecía de puerto USB 3.0.
 
 Se ha confeccionado un script \texttt{bash} que recoge para los discos duros que le indiquemos(a través de su punto de montaje
 en el sistema de archivos), las medias de todos los datos proporcionados por IOStat, tanto a nivel de CPU, como
 en la evaluación de dispositivos en un archivo de nombre \texttt{averages}. También proporciona los datos recogidos
-para cada parámetro, ordenados temporalmente según se recogieron en un archivo de nombre \texttt{data}. Realiza 
+para cada parámetro, ordenados temporalmente según se recogieron, en un archivo de nombre \texttt{data}. Realiza 
 5 iteraciones, realizando en cada iteración $i$ copias simultáneas, donde $i$ es el número de la iteración. Y almacena
 los datos recogidos en una carpeta de nombre el modelo de disco duro (obtenido mediante el comando \texttt{lsblk}), con
 los datos recogidos clasificados en directorios identificados por el número de copias simultáneas. El script se incluye en el
-anexo.
+\hyperlink{script}{Anexo}
 
 Asimismo, el mencionado script se apoya en otro realizado en \texttt{python}, de nombre \texttt{iostat\_plotter}, disponible
 para su descarga en \href{https://github.com/s3h10r/iostat-plotter}{GitHub}. El software original, dado  un archivo
@@ -515,15 +526,32 @@ de salida de IOStat ejecutado de la forma:
 \begin{lstlisting}[style=BashInputStyle]
  iostat -c -d -x -t -m  interval count > [archivo salida]
 \end{lstlisting}
-Generaba un informe \texttt{.html} de los resultados, así como gráficas de ellos. El software se ha modificado
+generaba un informe \texttt{.html} de los resultados, así como gráficas de ellos. El software se ha modificado
 para cambiar el idioma de las gráficas, y para obtener archivos de texto plano con los resultados (medias y listado
-de resultados, esto es, los archivos \texttt{averages} y \texttt{data} descritos anteriormente). Se incluye, ya
-modificado, en el anexo.
-
-\input{./tex/tablas.tex}
-
+de resultados, esto es, los archivos \texttt{averages} y \texttt{data} descritos anteriormente). Para que realizara
+la segunda función descrita, se incluyó en su código, justo antes de efectuar la impresión de gráficos, el \hyperlink{pyscript}{siguiente}
+código.
+ \section{Análisis de resultados}
+ Para realizar el análisis, nos basamos en los datos \hyperlink{tablas}{adjuntos}, obtenidos mediante los scripts también adjuntos.
+ 
+ Claramente, hay que descartar los datos tomados desde [S2], dado que se observan muchos outliers tanto en los MB/s
+ transferidos como en el resto de parámetros medidos. Además, en retrospectiva, el disco duro presentó bastantes 
+ dificultades para ser formateado tanto en ext4 como en FAT32. Por poner un ejemplo, se observa que con particionado
+ ext4, una copia tarda 17 veces más que 3 copias simultáneas, y el doble que 5 copias simultáneas. Para FAT32 nos
+ encontramos con la misma situación: una sola copia tarda 6 veces más que 2 copias simultáneas. Y 3 copias simultáneas tardan
+ 4 veces más que 4 copias simultaneas, según los datos recogidos. Se descartan por tanto dichos datos 
+ 
+ Es claro que la desviación típica de las mediciones efectuadas tanto en ext4 como en FAT32 dista mucho de la
+ desviación típica de las mediciones efectuadas con NTFS.
+ 
+ El modelo de almacenamiento que presenta mejores resultados para ext4 y FAT32 es el disco duro [S4], de conexión
+ SATA, 16 MB de caché y 7200 rpm, obteniendo medias en ext4 y en FAT32 de 90 MB/s y 66.752 MB/s, muy superiores
+ a las medias del segundo mejor disco, el [M1]: 69.238 y 40.839, respectivamente.
  \newpage
- \section*{Anexo}
+ \section*{Anexo} 
+ \pagenumbering{gobble}
+ \subsection*{Script bash para realizar mediciones sobre discos}
+ \hypertarget{script}{}
   
   \begin{lstlisting}[style=BashInputStyle]
 #!/bin/bash
@@ -594,6 +622,55 @@ do
     sleep 2
 done
   \end{lstlisting}
+  
+  \subsection*{Script python (porción) para graficar resultados y obtenerlos en texto plano}
+  \hypertarget{pyscript}{}
+  
+  \begin{lstlisting}[style=pystyle]
+   # ----------------------------------------
+   # Create files with useful analytics data   
+   # ----------------------------------------
+   
+   def mean(l):
+      return str(sum(l)/float(len(l))) 
+   
+   avg_file = open(dirname + '/averages', 'w')
+   data_file = open(dirname + '/data', 'w')
+   first_it = 0
+   
+   avg_file.write("cpu averages\n")
+   avg_file.write("\tuser: " + mean(user_list) + '\n')
+   avg_file.write("\tnice: " + mean(nice_list) + '\n')
+   avg_file.write("\tsystem: " + mean(system_list) + '\n')
+   avg_file.write("\tiowait: " + mean(iowait_list) + '\n')
+   avg_file.write("\tsteal: " + mean(steal_list) + '\n')
+   avg_file.write("\tidle: " + mean(idle_list) + '\n')
+   
+   data_file.write(str(len(device_data_list[0]["util"])) + " datos recogidos\n")
+   data_file.write("\ncpu data:\n\n")
+   data_file.write("user" + '\n' + str(user_list) + '\n')
+   data_file.write("nice" + '\n' + str(nice_list) + '\n')
+   data_file.write("system" + '\n' + str(system_list) + '\n')
+   data_file.write("iowait" + '\n' + str(iowait_list) + '\n')
+   data_file.write("steal" + '\n' + str(steal_list) + '\n')
+   data_file.write("idle" + '\n' + str(idle_list) + '\n')
+
+   for dev in device_data_list:
+      avg_file.write(dev["device"] + " averages:\n")
+      data_file.write('\n' + dev["device"] + " data:\n\n")
+      
+      for it in dev:            
+         if (it != "device"):
+            avg_file.write('\t' + it + ": " + mean(dev[it]) + '\n')		 
+            data_file.write(it + '\n' + str(dev[it]) + '\n')
+
+   avg_file.close()
+   data_file.close()
+  \end{lstlisting}
+ \newpage
+ \subsection*{Tablas de resultados para los distintos discos}
+ \hypertarget{tablas}{}
+ \input{./tex/tablas.tex}
   
 \newpage
 \printbibliography

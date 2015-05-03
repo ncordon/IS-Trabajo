@@ -43,7 +43,6 @@ do
 	    echo '\hline'
 	fi
 
-
 	for j in `seq 1 ${SIZE}`
 	do
 	    echo -n "$j copias simultáneas"
@@ -56,16 +55,37 @@ do
 		
 		if [[ ! -z "$data" ]]
 		then
+		    case $fs in
+			"ext4") ext4v=$(echo $data+${ext4v:-0} | bc -l)
+				;;
+			"fat32") fat32v=$(echo $data+${fat32v:-0} | bc -l)
+				 ;;
+			"ntfs") ntfsv=$(echo $data+${ntfsv:-0} | bc -l)
+				;;
+		    esac					 
                     printf "%.*f" $PREC "$data"
-		else
-		    echo "-"
 		fi
+	        
 	    done
 
 	    echo '\\'
 	    echo '\hline'
 	done
+	if [[ ! -z "$ext4v" ]]; then
+	    ext4v=`printf "%.*f" $PREC "$(echo $ext4v/$SIZE | bc -l)"`
+	fi
+	if [[ ! -z "$fat32v" ]]; then
+	    fat32v=`printf "%.*f" $PREC "$(echo $fat32v/$SIZE | bc -l)"`
+	fi
+        if [[ ! -z "$ntfsv" ]]; then
+	    ntfsv=`printf "%.*f" $PREC "$(echo $ntfsv/$SIZE | bc -l)"`
+	fi
+	echo "Media: & $ext4v & $fat32v & $ntfsv \\\\"
+	echo "\hline"
 
+	unset ext4v
+	unset fat32v
+	unset ntfsv
     done
 
     echo '\end{longtable}'
