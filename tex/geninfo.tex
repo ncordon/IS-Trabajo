@@ -1,0 +1,71 @@
+% Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+\noindent
+\mbox{}\textit{\#!/bin/bash} \\
+\mbox{} \\
+\mbox{}\textit{\#\ Rutas\ de\ montaje\ de\ los\ discos\ a\ analizar} \\
+\mbox{}PATHS=\texttt{"{}/media/usuario/5206ba37-ffc6-4ba5-9de3\ /media/usuario/NTFS\ /"{}} \\
+\mbox{}\textit{\#\ Nombre\ de\ fichero\ que\ se\ copiará} \\
+\mbox{}TFILE=\texttt{"{}testfile"{}} \\
+\mbox{}\textit{\#\ Nombre\ que\ se\ le\ dará\ a\ cada\ uno\ de\ los\ ficheros\ transferidos} \\
+\mbox{}DEST=\texttt{"{}copiedfile"{}} \\
+\mbox{}\textit{\#\ Número\ máximo\ de\ transferencias\ simultáneas} \\
+\mbox{}LIMIT=5 \\
+\mbox{}\textit{\#\ Frecuencia\ de\ muestreo\ de\ iostat} \\
+\mbox{}FREQ=\texttt{"{}2"{}} \\
+\mbox{}\textit{\#\ Flags\ de\ iostat} \\
+\mbox{}FLAGS=\texttt{"{}-y\ -c\ -d\ -x\ -t\ -m"{}}\  \\
+\mbox{}\textbf{export}\ LC$\_$NUMERIC=en$\_$US.UTF-8\ LC$\_$TIME=en$\_$US.UTF-8 \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textit{\#\ Se\ borran\ las\ carpetas\ de\ destino} \\
+\mbox{}\textbf{for}\ p\ \textbf{in}\ \$\{PATHS\} \\
+\mbox{}\textbf{do} \\
+\mbox{}\ \ \ \ rm\ -r\ \$p/temp/*\ 2\textgreater{}\ /dev/null \\
+\mbox{}\textbf{done} \\
+\mbox{} \\
+\mbox{} \\
+\mbox{}\textbf{for}\ k\ \textbf{in}\ `seq\ 1\ \$LIMIT` \\
+\mbox{}\textbf{do} \\
+\mbox{}\ \ \ \ NUM$\_$COPIES=\$k \\
+\mbox{} \\
+\mbox{}\ \ \ \ \textit{\#\ Para\ cada\ disco\ y\ un\ número\ de\ copias\ simultáneas\ k\ dado...} \\
+\mbox{}\ \ \ \ \textbf{for}\ p\ \textbf{in}\ \$\{PATHS\} \\
+\mbox{}\ \ \ \ \textbf{do} \\
+\mbox{}\ \ \ \ \ \ \ \ PIDS=\texttt{"{}"{}} \\
+\mbox{}\ \ \ \ \ \ \ \ HDD=\$(lsblk\ -io\ MODEL,MOUNTPOINT\ $|$\ sed\ \texttt{'/\textasciicircum{}}\texttt{\textbackslash{}s}\texttt{*\$/d'}\ $|$\ grep\ -B1\ \texttt{"{}\$p"{}}\ $|$\ head\ -1) \\
+\mbox{}\ \ \ \ \ \ \ \ DIR=\$\{HDD//\ \} \\
+\mbox{}\ \ \ \ \ \ \ \ DEVICE=\$(df\ -h\ $|$\ grep\ \texttt{"{}.*\$p*"{}}\ $|$\ grep\ -o\ \texttt{"{}\textasciicircum{}[\textasciicircum{}[:blank:][:digit:]]*"{}}) \\
+\mbox{}\ \ \ \ \ \ \ \  \\
+\mbox{}\ \ \ \ \ \ \ \ LOG=./\$\{DIR\}/log-\$\{k\}.out \\
+\mbox{} \\
+\mbox{}\ \ \ \ \ \ \ \ mkdir\ \$p/temp\ 2\textgreater{}\ /dev/null \\
+\mbox{}\ \ \ \ \ \ \ \ mkdir\ \$\{DIR\}\ 2\textgreater{}\ /dev/null \\
+\mbox{}\ \ \ \ \ \ \ \ (iostat\ \$\{FREQ\}\ \$\{FLAGS\}\ \$\{DEVICE\}\ \textgreater{}\ \$\{LOG\})\& \\
+\mbox{}\ \ \ \ \ \ \ \ IOSPID=\$! \\
+\mbox{}\ \ \ \ \ \ \ \  \\
+\mbox{}\ \ \ \ \ \ \ \ \textbf{for}\ i\ \textbf{in}\ `seq\ 1\ \$NUM$\_$COPIES` \\
+\mbox{}\ \ \ \ \ \ \ \ \textbf{do} \\
+\mbox{}\ \ \ \ \ \ \ \ \ \ \ \ cp\ \$\{TFILE\}\ \$p/temp/\$\{i\}\$\{DEST\}\ \& \\
+\mbox{}\ \ \ \ \ \ \ \ \ \ \ \ PIDS=\texttt{"{}\$\{PIDS\}\ \$!"{}} \\
+\mbox{}\ \ \ \ \ \ \ \ \textbf{done} \\
+\mbox{} \\
+\mbox{}\ \ \ \ \ \ \ \ \textit{\#\ Se\ espera\ a\ que\ terminan\ las\ copias\ para\ seguir} \\
+\mbox{}\ \ \ \ \ \ \ \ \textbf{wait}\ \$\{PIDS\} \\
+\mbox{} \\
+\mbox{}\ \ \ \ \ \ \ \ \textit{\#\ Interrumpe\ la\ ejecución\ de\ IOStat.\ Las\ copias\ ya\ han\ terminado} \\
+\mbox{}\ \ \ \ \ \ \ \ kill\ \$\{IOSPID\}\ \&\textgreater{}\ /dev/null \\
+\mbox{}\ \ \ \ \ \ \ \ \textbf{wait}\ \$\{IOSPID\}\ \&\textgreater{}\ /dev/null \\
+\mbox{} \\
+\mbox{}\ \ \ \ \ \ \ \ \textit{\#\ Genera\ las\ gráficas\ y\ los\ archivos\ de\ datos} \\
+\mbox{}\ \ \ \ \ \ \ \ ./iostat$\_$plotter$\_$v3.py\ \$\{LOG\} \\
+\mbox{}\ \ \ \ \ \ \ \ mv\ REPORT\ \$\{LOG\%.out\} \\
+\mbox{} \\
+\mbox{}\ \ \ \ \ \ \ \ \textit{\#\ Limpia\ el\ directorio\ para\ la\ siguiente\ ejecución} \\
+\mbox{}\ \ \ \ \ \ \ \ rm\ -r\ \$p/temp/*\ 2\textgreater{}\ /dev/null \\
+\mbox{}\ \ \ \ \textbf{done} \\
+\mbox{}\ \ \ \  \\
+\mbox{}\ \ \ \ sleep\ 2 \\
+\mbox{}\textbf{done} \\
+\mbox{}\ \ \ \ \ \ \ \  \\
+\mbox{}\ \ \ \  \\
+\mbox{}

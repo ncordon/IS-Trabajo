@@ -147,11 +147,10 @@
   xleftmargin=0.1\linewidth
 }
 
-% changes colour of texttt
+%changes colour of texttt
 \let\oldtexttt\texttt
 \renewcommand{\texttt}[2][black!60]{\textcolor{#1}{\ttfamily #2}}
 \newcommand{\tcolor}[2][red]{\textcolor{#1}{#2}}
-
 
 \renewcommand*{\newunitpunct}{\newline\space}
 \begin{document}
@@ -594,147 +593,98 @@ modificado, en el anexo.
  \end{longtable}
  
  
+  \section{Resultados}
+ \begin{longtable}{|l|l|l|l|}
+ \caption{Tabla de resultados para [M1]}\\
+  \hline
+  % wMB
+  \cellcolor{blue!25}\textbf{MB/s transferidos} & \cellcolor{blue!25}\textbf{ext4} & 
+  \cellcolor{blue!25}\cellcolor{blue!25}\textbf{FAT32} & \cellcolor{blue!25}\textbf{NTFS} \\
+  \hline
+  1 copia & \\
+  \hline
+  2 copias simultáneas\\
+  \hline
+  3 copias simultáneas\\
+  \hline
+  4 copias simultáneas\\
+  \hline
+  5 copias simultáneas\\
+  \hline
+  % w
+  \cellcolor{blue!25}\textbf{Media pet. escritura completadas por segundo} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
+  \hline
+  1 copia &\\
+  \hline
+  2 copias simultáneas\\
+  \hline
+  3 copias simultáneas\\
+  \hline
+  4 copias simultáneas\\
+  \hline
+  5 copias simultáneas\\
+  \hline
+  % avgrqsz
+  \cellcolor{blue!25}\textbf{Tamaño medio peticiones escritura(KB)} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
+  \hline
+  1 copia\\
+  \hline
+  2 copias simultáneas\\
+  \hline
+  3 copias simultáneas\\
+  \hline
+  4 copias simultáneas\\
+  \hline
+  5 copias simultáneas\\
+  \hline
+  % avgqusz
+  \cellcolor{blue!25}\textbf{Longitud media de la cola de escritura} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
+  \hline
+  1 copia\\
+  \hline
+  2 copias simultáneas\\
+  \hline
+  3 copias simultáneas\\
+  \hline
+  4 copias simultáneas\\
+  \hline
+  5 copias simultáneas\\
+  \hline
+  % util
+  \cellcolor{blue!25}\textbf{Ancho de banda para el dispositivo} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
+  \hline
+  1 copia\\
+  \hline
+  2 copias simultáneas\\
+  \hline
+  3 copias simultáneas\\
+  \hline
+  4 copias simultáneas\\
+  \hline
+  5 copias simultáneas\\
+  \hline  
+ \end{longtable}
+ 
+ 
+ 
 
- 
- 
 \begin{longtable}{|l|l|l|l|}
 \caption{Tabla de resultados para [M1]}\\
 \hline
 \cellcolor{blue!25}\textbf{MB/s transferidos} & \cellcolor{blue!25}\textbf{ext4} &\cellcolor{blue!25}\cellcolor{blue!25}\textbf{FAT32} & \cellcolor{blue!25}\textbf{NTFS}\\
 \hline
-1 copias simultáneas & 55.296 & 61.770 & 17.239\\
-\hline
-2 copias simultáneas & 67.077 & 39.753 & 16.564\\
-\hline
-3 copias simultáneas & 75.665 & 37.083 & 16.885\\
-\hline
-4 copias simultáneas & 74.104 & 35.284 & 18.129\\
-\hline
-5 copias simultáneas & 74.046 & 30.305 & 15.460\\
-\hline
 \cellcolor{blue!25}\textbf{Media pet. escritura completadas por segundo} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-\hline
-1 copias simultáneas & 443.368 & 497.128 & 138.541\\
-\hline
-2 copias simultáneas & 537.268 & 339.491 & 133.580\\
-\hline
-3 copias simultáneas & 606.042 & 322.767 & 137.490\\
-\hline
-4 copias simultáneas & 600.829 & 317.436 & 148.088\\
-\hline
-5 copias simultáneas & 601.842 & 280.018 & 126.727\\
 \hline
 \cellcolor{blue!25}\textbf{Tamaño medio peticiones escritura(KB)} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
 \hline
-1 copias simultáneas & 255.432 & 254.476 & 254.606\\
-\hline
-2 copias simultáneas & 255.617 & 232.524 & 253.313\\
-\hline
-3 copias simultáneas & 255.542 & 228.435 & 251.001\\
-\hline
-4 copias simultáneas & 252.472 & 221.354 & 250.423\\
-\hline
-5 copias simultáneas & 251.938 & 216.399 & 249.447\\
-\hline
 \cellcolor{blue!25}\textbf{Longitud media de la cola de escritura} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
 \hline
-1 copias simultáneas & 73.584 & 138.106 & 18.372\\
-\hline
-2 copias simultáneas & 159.496 & 143.351 & 18.202\\
-\hline
-3 copias simultáneas & 188.057 & 146.220 & 19.254\\
-\hline
-4 copias simultáneas & 197.096 & 151.750 & 21.029\\
-\hline
-5 copias simultáneas & 204.960 & 156.967 & 20.958\\
-\hline
 \cellcolor{blue!25}\textbf{Ancho de banda para el dispositivo} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-\hline
-1 copias simultáneas & 91.008 & 109.296 & 30.076\\
-\hline
-2 copias simultáneas & 118.308 & 102.124 & 29.264\\
-\hline
-3 copias simultáneas & 136.771 & 102.657 & 31.133\\
-\hline
-4 copias simultáneas & 141.505 & 106.701 & 34.549\\
-\hline
-5 copias simultáneas & 146.497 & 109.798 & 32.426\\
 \hline
 \end{longtable}
  
  \newpage
  \section*{Anexo}
-  
-  \begin{lstlisting}[style=BashInputStyle]
-#!/bin/bash
-
-# Rutas de montaje de los discos a analizar
-PATHS="/media/usuario/5206ba37-ffc6-4ba5-9de3 /media/usuario/NTFS /"
-# Nombre de fichero que se copiará
-TFILE="testfile"
-# Nombre que se le dará a cada uno de los ficheros transferidos
-DEST="copiedfile"
-# Número máximo de transferencias simultáneas
-LIMIT=5
-# Frecuencia de muestreo de iostat
-FREQ="2"
-# Flags de iostat
-FLAGS="-y -c -d -x -t -m" 
-export LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8
-
-
-# Se borran las carpetas de destino
-for p in ${PATHS}
-do
-    rm -r $p/temp/* 2> /dev/null
-done
-
-
-for k in `seq 1 $LIMIT`
-do
-    NUM_COPIES=$k
-
-    # Para cada disco y un número de copias simultáneas k dado...
-    for p in ${PATHS}
-    do
-	PIDS=""
-	HDD=$(lsblk -io MODEL,MOUNTPOINT | sed '/^\s*$/d' | 
-	grep -B1 "$p" | head -1)
-	DIR=${HDD// }
-	DEVICE=$(df -h | grep ".*$p*" | grep -o "^[^[:blank:][:digit:]]*")
-	
-	LOG=./${DIR}/log-${k}.out
-
-	mkdir $p/temp 2> /dev/null
-	mkdir ${DIR} 2> /dev/null
-	(iostat ${FREQ} ${FLAGS} ${DEVICE} > ${LOG})&
-	IOSPID=$!
-	
-	for i in `seq 1 $NUM_COPIES`
-	do
-	    cp ${TFILE} $p/temp/${i}${DEST} &
-	    PIDS="${PIDS} $!"
-	done
-
-	# Se espera a que terminan las copias para seguir
-	wait ${PIDS}
-
-	# Interrumpe la ejecución de IOStat. Las copias ya han terminado
-	kill ${IOSPID} &> /dev/null
-	wait ${IOSPID} &> /dev/null
-
-	# Genera las gráficas y los archivos de datos
-	./iostat_plotter_v3.py ${LOG}
-	mv REPORT ${LOG%.out}
-
-	# Limpia el directorio para la siguiente ejecución
-	rm -r $p/temp/* 2> /dev/null
-    done
-    
-    sleep 2
-done
-  \end{lstlisting}
-  
 \newpage
 \printbibliography
 \end{document}

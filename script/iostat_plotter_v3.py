@@ -2482,25 +2482,42 @@ if __name__ == '__main__':
       # end for
    # end for
 
+   # ----------------------------------------
    # Create files with useful analytics data   
-
+   # ----------------------------------------
+   
+   def mean(l):
+      return str(sum(l)/float(len(l))) 
+   
    avg_file = open(dirname + '/averages', 'w')
    data_file = open(dirname + '/data', 'w')
    first_it = 0
+   
+   avg_file.write("cpu averages\n")
+   avg_file.write("\tuser: " + mean(user_list) + '\n')
+   avg_file.write("\tnice: " + mean(nice_list) + '\n')
+   avg_file.write("\tsystem: " + mean(system_list) + '\n')
+   avg_file.write("\tiowait: " + mean(iowait_list) + '\n')
+   avg_file.write("\tsteal: " + mean(steal_list) + '\n')
+   avg_file.write("\tidle: " + mean(idle_list) + '\n')
+   
+   data_file.write(str(len(device_data_list[0]["util"])) + " datos recogidos\n")
+   data_file.write("\ncpu data:\n\n")
+   data_file.write("user" + '\n' + str(user_list) + '\n')
+   data_file.write("nice" + '\n' + str(nice_list) + '\n')
+   data_file.write("system" + '\n' + str(system_list) + '\n')
+   data_file.write("iowait" + '\n' + str(iowait_list) + '\n')
+   data_file.write("steal" + '\n' + str(steal_list) + '\n')
+   data_file.write("idle" + '\n' + str(idle_list) + '\n')
 
    for dev in device_data_list:
       avg_file.write(dev["device"] + " averages:\n")
-      data_file.write(dev["device"] + " data:\n")
-
-      for it in dev:
+      data_file.write('\n' + dev["device"] + " data:\n\n")
+      
+      for it in dev:            
          if (it != "device"):
-            avg_file.write('\t' + it + ": " + str(sum(dev[it])/float(len(dev[it]))) + '\n')
-            
-            if (first_it == 0):
-                first_it = -1
-		data_file.write(str(len(dev[it])) + " datos recogidos\n")
-            
-            data_file.write(it + '\n' + str(dev[it]) + '\n')   
+            avg_file.write('\t' + it + ": " + mean(dev[it]) + '\n')		 
+            data_file.write(it + '\n' + str(dev[it]) + '\n')
 
    avg_file.close()
    data_file.close()
