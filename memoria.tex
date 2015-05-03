@@ -94,10 +94,10 @@
 
 \makeatletter
 \renewcommand{\@listI}{\itemsep=0pt} % Reduce the space between items in the itemize and enumerate environments and the bibliography
-\newcommand{\imagent}[4]{
-  \begin{wrapfigure}{#4}{0.7\textwidth}
+\newcommand{\imagent}[5]{
+  \begin{wrapfigure}{#2}{#5\textwidth}
     \begin{center}
-    \includegraphics[width=0.7\textwidth]{#1}
+    \includegraphics[width=#5\textwidth]{#1}
     \end{center}
     \caption{#3}
     \label{#4}
@@ -393,7 +393,7 @@ Vamos a efectuar un análisis de prestaciones sobre varios tipos de discos duros
 disco en el copiado de archivos. Los discos duros podrán tener particiones de diferente tipo y tamaño.
 
 \subsection{Definición del sistema}
-El principal objetivo del estudio es comparar la velocidad del copiado de archivos en varios discos duros con particiones
+\imagent{system.jpg}{r}{Equipo usado para realizar el desarrollo experimental}{system}{0.6}El principal objetivo del estudio es comparar la velocidad del copiado de archivos en varios discos duros con particiones
 en distintos formatos. En otras palabras, determinar cuál es el tipo de almacenamiento más rápido. El estudio se centrará
 por tanto en discos duros. Se dispondrá de dos discos duros conectados a la misma placa madre, uno que alojará los datos a
 transferir, y otro que será el encargado de recibir los datos transferidos.
@@ -419,7 +419,6 @@ del disco duro será: \textbf{número de kilobytes escritos en el dispositivo po
  tamaño de la cola en IOStat).
  \item Tiempo que tardan las peticiones de escritura en ser servidas. (\texttt{w\_await} proporciona la media
  de dicho tiempo en IOStat).
- \item Ancho de banda del dispositivo (\texttt{\%util} en IOStat).
 \end{itemize}
 
 \subsection{Parámetros}
@@ -521,147 +520,8 @@ para cambiar el idioma de las gráficas, y para obtener archivos de texto plano 
 de resultados, esto es, los archivos \texttt{averages} y \texttt{data} descritos anteriormente). Se incluye, ya
 modificado, en el anexo.
 
- \section{Resultados}
- \begin{longtable}{|l|l|l|l|}
- \caption{Tabla de resultados para [M1]}\\
-  \hline
-  % wMB
-  \cellcolor{blue!25}\textbf{MB/s transferidos} & \cellcolor{blue!25}\textbf{ext4} & 
-  \cellcolor{blue!25}\cellcolor{blue!25}\textbf{FAT32} & \cellcolor{blue!25}\textbf{NTFS} \\
-  \hline
-  1 copia & 55.296\\
-  \hline
-  2 copias simultáneas\\
-  \hline
-  3 copias simultáneas\\
-  \hline
-  4 copias simultáneas\\
-  \hline
-  5 copias simultáneas\\
-  \hline
-  % w
-  \cellcolor{blue!25}\textbf{Media pet. escritura completadas por segundo} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-  \hline
-  1 copia & 443.368\\
-  \hline
-  2 copias simultáneas\\
-  \hline
-  3 copias simultáneas\\
-  \hline
-  4 copias simultáneas\\
-  \hline
-  5 copias simultáneas\\
-  \hline
-  % avgrqsz
-  \cellcolor{blue!25}\textbf{Tamaño medio peticiones escritura(KB)} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-  \hline
-  1 copia & 255.432\\
-  \hline
-  2 copias simultáneas\\
-  \hline
-  3 copias simultáneas\\
-  \hline
-  4 copias simultáneas\\
-  \hline
-  5 copias simultáneas\\
-  \hline
-  % avgqusz
-  \cellcolor{blue!25}\textbf{Longitud media de la cola de escritura} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-  \hline
-  1 copia & 73.584\\
-  \hline
-  2 copias simultáneas\\
-  \hline
-  3 copias simultáneas\\
-  \hline
-  4 copias simultáneas\\
-  \hline
-  5 copias simultáneas\\
-  \hline
-  % util
-  \cellcolor{blue!25}\textbf{Ancho de banda para el dispositivo} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-  \hline
-  1 copia\\
-  \hline
-  2 copias simultáneas\\
-  \hline
-  3 copias simultáneas\\
-  \hline
-  4 copias simultáneas\\
-  \hline
-  5 copias simultáneas\\
-  \hline  
- \end{longtable}
- 
- 
+\input{./tex/tablas.tex}
 
- 
- 
-\begin{longtable}{|l|l|l|l|}
-\caption{Tabla de resultados para [M1]}\\
-\hline
-\cellcolor{blue!25}\textbf{MB/s transferidos} & \cellcolor{blue!25}\textbf{ext4} &\cellcolor{blue!25}\cellcolor{blue!25}\textbf{FAT32} & \cellcolor{blue!25}\textbf{NTFS}\\
-\hline
-1 copias simultáneas & 55.296 & 61.770 & 17.239\\
-\hline
-2 copias simultáneas & 67.077 & 39.753 & 16.564\\
-\hline
-3 copias simultáneas & 75.665 & 37.083 & 16.885\\
-\hline
-4 copias simultáneas & 74.104 & 35.284 & 18.129\\
-\hline
-5 copias simultáneas & 74.046 & 30.305 & 15.460\\
-\hline
-\cellcolor{blue!25}\textbf{Media pet. escritura completadas por segundo} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-\hline
-1 copias simultáneas & 443.368 & 497.128 & 138.541\\
-\hline
-2 copias simultáneas & 537.268 & 339.491 & 133.580\\
-\hline
-3 copias simultáneas & 606.042 & 322.767 & 137.490\\
-\hline
-4 copias simultáneas & 600.829 & 317.436 & 148.088\\
-\hline
-5 copias simultáneas & 601.842 & 280.018 & 126.727\\
-\hline
-\cellcolor{blue!25}\textbf{Tamaño medio peticiones escritura(KB)} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-\hline
-1 copias simultáneas & 255.432 & 254.476 & 254.606\\
-\hline
-2 copias simultáneas & 255.617 & 232.524 & 253.313\\
-\hline
-3 copias simultáneas & 255.542 & 228.435 & 251.001\\
-\hline
-4 copias simultáneas & 252.472 & 221.354 & 250.423\\
-\hline
-5 copias simultáneas & 251.938 & 216.399 & 249.447\\
-\hline
-\cellcolor{blue!25}\textbf{Longitud media de la cola de escritura} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-\hline
-1 copias simultáneas & 73.584 & 138.106 & 18.372\\
-\hline
-2 copias simultáneas & 159.496 & 143.351 & 18.202\\
-\hline
-3 copias simultáneas & 188.057 & 146.220 & 19.254\\
-\hline
-4 copias simultáneas & 197.096 & 151.750 & 21.029\\
-\hline
-5 copias simultáneas & 204.960 & 156.967 & 20.958\\
-\hline
-\cellcolor{blue!25}\textbf{Ancho de banda para el dispositivo} & \multicolumn{3}{c|}{\cellcolor{blue!25}}\\
-\hline
-1 copias simultáneas & 91.008 & 109.296 & 30.076\\
-\hline
-2 copias simultáneas & 118.308 & 102.124 & 29.264\\
-\hline
-3 copias simultáneas & 136.771 & 102.657 & 31.133\\
-\hline
-4 copias simultáneas & 141.505 & 106.701 & 34.549\\
-\hline
-5 copias simultáneas & 146.497 & 109.798 & 32.426\\
-\hline
-\end{longtable}
- 
  \newpage
  \section*{Anexo}
   
