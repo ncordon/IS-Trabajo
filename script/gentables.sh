@@ -2,11 +2,14 @@
 
 HDD="Maxtor6K040L0 ST34321A ST320410A ST320413A ST3320613AS WD800JD WDBUZG0010BBK"
 FS="ext4 fat32 ntfs"
-PARAMS="wMB w avgrqsz avgqusz"
+PARAMS="wMB w wrqm avgrqsz avgqusz cpu"
+
 declare -A TEXT=(["wMB"]="MB/s transferidos"
 		 ["w"]="Media pet. escritura completadas por segundo"
-		 ["avgrqsz"]="Tamaño medio peticiones escritura(KB)"
-		 ["avgqusz"]="Longitud media de la cola de escritura")
+		 ["wrqm"]="Peticiones de escritura mezcladas por segundo"
+		 ["avgrqsz"]="Tamaño medio peticiones escritura(sectores=0.5KB)"
+		 ["avgqusz"]="Longitud media de la cola de escritura"
+		 ["cpu"]="Utilización en \% de la CPU")
 
 declare -A IDS=(["Maxtor6K040L0"]="M1"
 		["ST34321A"]="S1"
@@ -49,8 +52,21 @@ do
 
 	    for fs in $FS
 	    do
-		data=$(cat $DATA_DIR/$fs/$hdd/log-$j/averages |
-		      grep -o "$p:.*" | egrep -o "[[:digit:]]+\.[[:digit:]]+")
+		if [[ ! $p == "cpu" ]]
+		then
+		    data=$(cat $DATA_DIR/$fs/$hdd/log-$j/averages |
+			  grep -o "$p:.*" | egrep -o "[[:digit:]]+\.[[:digit:]]+")
+		else
+		    sum1=$(cat $DATA_DIR/$fs/$hdd/log-$j/averages |
+			 grep "user:.*" | grep -o [[:digit:]].*)
+		    sum2=$(cat $DATA_DIR/$fs/$hdd/log-$j/averages |
+			 grep "system:.*" | grep -o [[:digit:]].*)
+		    if [[ ! -z "$sum1" ]]
+		    then
+			data=$(echo $sum1+$sum2 | bc -l)
+		    fi		    
+	        fi
+		
 		echo -n " & "
 		
 		if [[ ! -z "$data" ]]
@@ -65,6 +81,7 @@ do
 		    esac					 
                     printf "%.*f" $PREC "$data"
 		fi
+		unset data
 	        
 	    done
 
@@ -89,4 +106,5 @@ do
     done
 
     echo '\end{longtable}'
+    echo '\newpage'
 done

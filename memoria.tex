@@ -66,28 +66,7 @@
   citecolor   = red %Colour of citations
 }
 
-% Colours
-\usepackage{xcolor}
-\usepackage{colortbl}
 
-% To include code
-\usepackage{listings}
-
-% code in bash style
-\lstdefinestyle{BashInputStyle}{
-  language=bash,
-  basicstyle=\small\ttfamily,
-  numberstyle=\tiny,
-  numbersep=3pt,
-  columns=fullflexible,
-  backgroundcolor=\color{gray!20},
-  xleftmargin=0.1\linewidth
-}
-
-\lstdefinestyle{pystyle}{
-  language=python,
-  basicstyle=\small\ttfamily
-}
 % To change level of indentation
 \newenvironment{answer}{%
 \begin{list}{}{%
@@ -135,8 +114,11 @@
  }
  
  
-% To include code
+% Colours
 \usepackage{xcolor}
+\usepackage{colortbl}
+
+% To include code
 \usepackage{listings}
 
 % code in bash style
@@ -146,8 +128,18 @@
   numberstyle=\tiny,
   numbersep=3pt,
   columns=fullflexible,
-  backgroundcolor=\color{gray!20},
-  xleftmargin=0.1\linewidth
+  backgroundcolor=\color{gray!10},
+  xleftmargin=0.05\linewidth,
+  showspaces=false,
+  showstringspaces=false,
+  breaklines=true,
+}
+
+\lstdefinestyle{pystyle}{
+  language=python,
+  basicstyle=\small\ttfamily,
+  showspaces=false,
+  showstringspaces=false
 }
 
 % changes colour of texttt
@@ -377,7 +369,7 @@ La información mostrada puede incluir (en función de si se emplea la opción \
  \item{\texttt{w/s}}: número de peticiones de escritura(ya combinadas) completadas por segundo.
  \item{\texttt{rKB/s}} (\texttt{rMB/s}): equivalente a \texttt{KB\_read/s} (o \texttt{MB\_read}).
  \item{\texttt{wKB/s}} (\texttt{wMB/s}): equivalente a \texttt{KB\_wrtn/s} (o \texttt{MB\_wrtn}).
- \item{\texttt{avgrq-sz}}: número medio de peticiones de lectura, en MB o KB según le hallamos indicado al comando, emitidas
+ \item{\texttt{avgrq-sz}}: tamaño medio de las peticiones, en sectores (512 bytes), emitidas
  al dispositivo.
  \item{\texttt{avgqu-sz}}: longitud media de la cola para las peticiones emitidas al dispositivo.
  \item{\texttt{await}}: media en milisegundos que tarda una petición en ser servida (incluyendo tiempo de servicio y de cola).
@@ -398,8 +390,7 @@ por tanto en discos duros. Se dispondrá de dos discos duros conectados a la mis
 transferir, y otro que será el encargado de recibir los datos transferidos.
 
 Obviaremos del equipo al que conectaremos los discos duros todo aquellos componentes que no interfieran en la transferencia 
-de archivos o que no resulten determinantes (como el procesador, que tal y como se refleja en algunas de las gráficas incluidas
-en el presente documento, no se emplea a más del 50\% de su capacidad).
+de archivos o que no resulten determinantes.
 
 \subsection{Servicios proporcionados por el sistema}
 El servicio principal proporcionado por el sistema es la transferencia de datos entre discos duros.
@@ -413,13 +404,17 @@ del disco duro será: \textbf{número de kilobytes (o MB) escritos en el disposi
  ($\approx$ velocidad de transferencia):
 \begin{itemize}
  \item Número de peticiones de escritura completadas en el dispositivo por segundo. (\texttt{w/s} en IOStat).
- \item Tamaño de las peticiones de escritura al dispositivo (\texttt{avgrq-sz} es la media de dichos tiempos en
+ \item Número de peticiones de escritura mezcladas por segundo (\texttt{wrqm/s} proporciona este dato en IOStat).
+ \item Tamaño de las peticiones de escritura al dispositivo (\texttt{avgrq-sz} es la media de dichos tamaños en
  IOStat).
  \item Tamaño de la cola en el dispositivo durante la transferencia. (\texttt{avgqu-sz} representa la media del
  tamaño de la cola en IOStat).
  \item Tiempo que tardan las peticiones de escritura en ser servidas. (\texttt{w\_await} proporciona la media
  de dicho tiempo en IOStat).
 \end{itemize}
+
+ También se evaluará el porcentaje de carga CPU del sistema (\texttt{\%system} + \texttt{\%user} en IOStat), 
+ puesto que como se verá posteriormente condiciona mucho las transferencias en NTFS.
 
 \subsection{Parámetros}
 Los parámetros del sistema que influyen en las prestaciones serán: \cite{hddparam}
@@ -531,97 +526,70 @@ para cambiar el idioma de las gráficas, y para obtener archivos de texto plano 
 de resultados, esto es, los archivos \texttt{averages} y \texttt{data} descritos anteriormente). Para que realizara
 la segunda función descrita, se incluyó en su código, justo antes de efectuar la impresión de gráficos, el \hyperlink{pyscript}{siguiente}
 código.
+
+También se ha empleado un script bash para automatizar el proceso de dar formato a los datos. Para los archivos de
+datos obtenidos, genera una tabla \LaTeX en la que además se reflejan las medias de las 5 iteraciones, para un
+modelo de disco duro y un tipo de formato determinados. Se \hyperlink{gentables}{adjunta} en el anexo.
  \section{Análisis de resultados}
  Para realizar el análisis, nos basamos en los datos \hyperlink{tablas}{adjuntos}, obtenidos mediante los scripts también adjuntos.
  
- Claramente, hay que descartar los datos tomados desde [S2], dado que se observan muchos outliers tanto en los MB/s
+ Claramente, hay que descartar los datos tomados desde [S2], dado que se observan muchos \textit{outliers} tanto en los MB/s
  transferidos como en el resto de parámetros medidos. Además, en retrospectiva, el disco duro presentó bastantes 
  dificultades para ser formateado tanto en ext4 como en FAT32. Por poner un ejemplo, se observa que con particionado
  ext4, una copia tarda 17 veces más que 3 copias simultáneas, y el doble que 5 copias simultáneas. Para FAT32 nos
  encontramos con la misma situación: una sola copia tarda 6 veces más que 2 copias simultáneas. Y 3 copias simultáneas tardan
- 4 veces más que 4 copias simultaneas, según los datos recogidos. Se descartan por tanto dichos datos 
- 
- Es claro que la desviación típica de las mediciones efectuadas tanto en ext4 como en FAT32 dista mucho de la
- desviación típica de las mediciones efectuadas con NTFS.
+ 4 veces más que 4 copias simultaneas, según los datos recogidos. Se descartan por tanto todos los datos procedentes
+ de [S2] para realizar el análisis.
  
  El modelo de almacenamiento que presenta mejores resultados para ext4 y FAT32 es el disco duro [S4], de conexión
  SATA, 16 MB de caché y 7200 rpm, obteniendo medias en ext4 y en FAT32 de 90 MB/s y 66.752 MB/s, muy superiores
- a las medias del segundo mejor disco, el [M1]: 69.238 y 40.839, respectivamente.
+ a las medias del segundo mejor disco, el [M1]: 69.238 MB/s y 40.839 MB/s, respectivamente.
+ 
+ En contraste, el disco que mejores prestaciones presenta para el sistema de archivos NTFS es el [M1], con una
+ media de 16.855 MB/s en transferencias frente a los 14.522 MB/s del [S4].
+ 
+ Analizando en profundidad el resto de datos extraídos, se observa que el producto del número de peticiones de escritura completadas
+ por segundo por el tamaño medio de las peticiones de escritura en sectores por los 0.5 KB que ocupa cada sector
+ nos devuelve un dato muy próximo a la tasa de transferencia en MB/s del dispositivo, como debía de verificarse teóricamente.
+ 
+ Resulta especialmente llamativo que la tasa de transferencia en NTFS sea en todos los casos más pequeña que la tasa
+ de transferencia en ext4 y FAT32. Según los datos de que disponemos, el formato ext4 es mucho más rápido que el FAT32 y el NTFS. Este
+ dato podría guardar algún tipo de correlación con el hecho de que en todos los discos evaluados la longitud de la cola
+ de espera de escritura en disco es mucho menor en NTFS que en FAT32 y ext4 y se mezclan muchas más peticiones de escritura por segundo.
+ Asimismo, también es observable en vista de las medias obtenidas para el experimento que el tamaño de las peticiones
+ de escritura en FAT32 resulta más pequeño que en ext4 y NTFS, excepto en el caso de [WD2]. También se observa que en todos
+ los discos, la carga CPU que genera una transferencia NTFS es mucho mayor que la que genera una transferencia FAT32 o una ext4,
+ llegando en casos a rozar el 100\% de utilización como en las transferencias efectuadas en [M1] y [S4].
+ 
+ Asimismo, en general, no puede afirmarse nada acerca de cómo afecta el número de transferencias simultáneas a 
+ la tasa de transferencia, aunque a priori se pensaba que un mayor número de transferencias simultáneas podía dar lugar a
+ una velocidad de transferencia peor, al ser el ancho de banda del disco en cuestión cercano al 100\%. Así, en las
+ tablas de resultados \hyperlink{tablas}{adjuntas}, hay casos como el [M1], formateado en ext4, donde 5 transferencias
+ a la vez arrojan una mayor tasa de transferencia que 1 sola copia simultánea. Y hay casuísticas como [S1] formateado en
+ FAT32, donde la tasa de transferencia es mayor para una transferencia simultánea que para más transferencias simultáneas.
+ 
+ Resulta especialmente reseñable que a pesar de ser [WD1] un disco con conexión SATA (más rápido que IDE), 4 veces más caché
+ que [M1] y la misma velocidad de rotación, tenga [M1] una tasa de transferencia más alta en ext4, que es la única
+ casuística que podemos evaluar, habiéndose obtenido 54.618 MB/s frente a 69.238 MB/s.
+ 
+ Asimismo, también se observa que el disco [WD2] a pesar de ser un dispositivo externo conectado mediante USB, sea mucho
+ más rápido que [S1], disco duro IDE, que es una conexión más rápida que USB 2.0 y más si cabe teniendo ambos discos el mismo número de revoluciones por minuto
+ (133 MB/s de IDE, como anteriormente se ha afirmado, frente a los 480 Mbit/s (=60 MB/s) que se afirma en \cite{usbv} que posee
+ una conexión USB 2.0).
+
+ \imagen{./data/ext4/ST3320613AS/log-5/write_throughput0.png}{Througput de escritura para ext4 y 5 transferencias simultáneas en [S4]}{winfat32}{1}
+ \imagen{./data/fat32/ST3320613AS/log-5/write_throughput0.png}{Througput de escritura para FAT32 y 5 transferencias simultáneas en [S4]}{winfat32}{1}
+ \imagen{./data/ntfs/ST3320613AS/log-5/write_throughput0.png}{Througput de escritura para NTFS y 5 transferencias simultáneas en [S4]}{winfat32}{1}
+
+
+
  \newpage
  \section*{Anexo} 
  \pagenumbering{gobble}
  \subsection*{Script bash para realizar mediciones sobre discos}
  \hypertarget{script}{}
   
-  \begin{lstlisting}[style=BashInputStyle]
-#!/bin/bash
-
-# Rutas de montaje de los discos a analizar
-PATHS="/media/usuario/5206ba37-ffc6-4ba5-9de3 /media/usuario/NTFS /"
-# Nombre de fichero que se copiará
-TFILE="testfile"
-# Nombre que se le dará a cada uno de los ficheros transferidos
-DEST="copiedfile"
-# Número máximo de transferencias simultáneas
-LIMIT=5
-# Frecuencia de muestreo de iostat
-FREQ="2"
-# Flags de iostat
-FLAGS="-y -c -d -x -t -m" 
-export LC_NUMERIC=en_US.UTF-8 LC_TIME=en_US.UTF-8
-
-
-# Se borran las carpetas de destino
-for p in ${PATHS}
-do
-    rm -r $p/temp/* 2> /dev/null
-done
-
-
-for k in `seq 1 $LIMIT`
-do
-    NUM_COPIES=$k
-
-    # Para cada disco y un número de copias simultáneas k dado...
-    for p in ${PATHS}
-    do
-	PIDS=""
-	HDD=$(lsblk -io MODEL,MOUNTPOINT | sed '/^\s*$/d' | 
-	grep -B1 "$p" | head -1)
-	DIR=${HDD// }
-	DEVICE=$(df -h | grep ".*$p*" | grep -o "^[^[:blank:][:digit:]]*")
-	
-	LOG=./${DIR}/log-${k}.out
-
-	mkdir $p/temp 2> /dev/null
-	mkdir ${DIR} 2> /dev/null
-	(iostat ${FREQ} ${FLAGS} ${DEVICE} > ${LOG})&
-	IOSPID=$!
-	
-	for i in `seq 1 $NUM_COPIES`
-	do
-	    cp ${TFILE} $p/temp/${i}${DEST} &
-	    PIDS="${PIDS} $!"
-	done
-
-	# Se espera a que terminan las copias para seguir
-	wait ${PIDS}
-
-	# Interrumpe la ejecución de IOStat. Las copias ya han terminado
-	kill ${IOSPID} &> /dev/null
-	wait ${IOSPID} &> /dev/null
-
-	# Genera las gráficas y los archivos de datos
-	./iostat_plotter_v3.py ${LOG}
-	mv REPORT ${LOG%.out}
-
-	# Limpia el directorio para la siguiente ejecución
-	rm -r $p/temp/* 2> /dev/null
-    done
-    
-    sleep 2
-done
-  \end{lstlisting}
+  \lstinputlisting[style=BashInputStyle]{./script/geninfo.sh}
   
   \subsection*{Script python (porción) para graficar resultados y obtenerlos en texto plano}
   \hypertarget{pyscript}{}
@@ -667,10 +635,15 @@ done
    avg_file.close()
    data_file.close()
   \end{lstlisting}
+  
+  \subsection*{Script para generar tablas \LaTeX \space a partir de los resultados}
+  \hypertarget{gentables}{}
+  \lstinputlisting[style=BashInputStyle]{./script/gentables.sh}
  \newpage
  \subsection*{Tablas de resultados para los distintos discos}
  \hypertarget{tablas}{}
  \input{./tex/tablas.tex}
+% \input{./tex/cpu.tex}
   
 \newpage
 \printbibliography
